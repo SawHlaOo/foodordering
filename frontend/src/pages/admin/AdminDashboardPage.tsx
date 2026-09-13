@@ -158,16 +158,16 @@ export const AdminDashboardPage = () => {
         <p className="mt-1 text-slate-500">Manage the kitchen and restaurant menu from one place.</p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <section id="admin-overview" className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {cards.map((card) => (
           <div key={card.label} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <p className="text-sm text-slate-500">{card.label}</p>
             <p className="mt-2 text-3xl font-black text-slate-900">{card.value}</p>
           </div>
         ))}
-      </div>
+      </section>
 
-      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <section id="admin-menu" className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="text-2xl font-black text-slate-900">Food and drinks</h2>
@@ -203,7 +203,7 @@ export const AdminDashboardPage = () => {
         </div>
       </section>
 
-      <section ref={formSectionRef} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <section id="admin-completed" className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="text-2xl font-black text-slate-900">Completed order records</h2>
         <p className="mt-1 text-sm text-slate-500">Customer name, food ordered, and completion date.</p>
         <div className="mt-5 space-y-3">
@@ -220,7 +220,7 @@ export const AdminDashboardPage = () => {
         </div>
       </section>
 
-      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <section id="admin-menu-form" ref={formSectionRef} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="text-2xl font-black text-slate-900">{editingId ? 'Edit menu item' : 'Add menu item'}</h2>
         <p className="mt-1 text-sm text-slate-500">Upload an image directly from your device. PNG, JPG, WEBP, and GIF up to 5 MB are supported.</p>
         {formError && <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">{formError}</p>}
