@@ -13,11 +13,23 @@ type AuthContextValue = {
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+const cachedUserKey = 'flavorflow_user';
+
+const readCachedUser = (): User | null => {
+  try {
+    const cachedUser = sessionStorage.getItem(cachedUserKey);
+    return cachedUser ? JSON.parse(cachedUser) as User : null;
+  } catch {
+    sessionStorage.removeItem(cachedUserKey);
+    return null;
+  }
+};
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(localStorage.getItem('flavorflow_token'));
-  const [loading, setLoading] = useState(true);
+  const initialToken = localStorage.getItem('flavorflow_token');
+  const [user, setUser] = useState<User | null>(() => initialToken ? readCachedUser() : null);
+  const [token, setToken] = useState<string | null>(initialToken);
+  const [loading, setLoading] = useState(() => !initialToken || !readCachedUser());
 
   const refreshUser = async () => {
     const currentToken = localStorage.getItem('flavorflow_token');
@@ -29,12 +41,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     try {
       const profile = await api.get<{ id: string; name: string; email: string; role: Role; phone?: string | null }>('/auth/me');
-      setUser({ ...profile, id: profile.id, role: profile.role });
+      const nextUser = { ...profile, id: profile.id, role: profile.role };
+      sessionStorage.setItem(cachedUserKey, JSON.stringify(nextUser));
+      setUser(nextUser);
     } catch (error) {
       if (error instanceof ApiRequestError && error.status === 401) {
         localStorage.removeItem('flavorflow_token');
         setToken(null);
         setUser(null);
+        sessionStorage.removeItem(cachedUserKey);
       }
     } finally {
       setLoading(false);
@@ -48,6 +63,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const login = async (email: string, password: string) => {
     const result = await api.post<{ token: string; user: User }>('/auth/login', { email, password });
     localStorage.setItem('flavorflow_token', result.token);
+    sessionStorage.setItem(cachedUserKey, JSON.stringify(result.user));
     setToken(result.token);
     setUser(result.user);
     return result.user;
@@ -56,6 +72,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const register = async (name: string, email: string, password: string, phone?: string) => {
     const result = await api.post<{ token: string; user: User }>('/auth/register', { name, email, password, phone });
     localStorage.setItem('flavorflow_token', result.token);
+    sessionStorage.setItem(cachedUserKey, JSON.stringify(result.user));
     setToken(result.token);
     setUser(result.user);
     return result.user;
@@ -65,6 +82,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.removeItem('flavorflow_token');
     setToken(null);
     setUser(null);
+    sessionStorage.removeItem(cachedUserKey);
   };
 
   const value = useMemo<AuthContextValue>(() => ({ user, token, loading, login, register, logout, refreshUser }), [user, token, loading]);
