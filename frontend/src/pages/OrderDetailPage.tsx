@@ -26,7 +26,7 @@ export const OrderDetailPage = () => {
             <p className="text-sm uppercase tracking-[0.2em] text-slate-500">Order #{order.orderNumber}</p>
             <h1 className="text-2xl font-black text-slate-900">{displayStatus(order.status)}</h1>
           </div>
-          <span className="text-xl font-bold text-brand-600">${Number(order.total).toFixed(2)}</span>
+          <span className="text-xl font-bold text-brand-600">MMK {Number(order.total).toFixed(2)}</span>
         </div>
         <OrderStatusTracker currentStatus={order.status} />
       </div>
@@ -38,7 +38,7 @@ export const OrderDetailPage = () => {
             {order.items?.map((item) => (
               <div key={item.id} className="flex justify-between text-slate-600">
                 <span>{item.quantity}x {item.food.name}</span>
-                <span>${Number(item.price).toFixed(2)}</span>
+                <span>MMK {Number(item.price).toFixed(2)}</span>
               </div>
             ))}
           </div>
@@ -48,9 +48,9 @@ export const OrderDetailPage = () => {
           <div className="mt-4 space-y-2 text-sm text-slate-600">
             <div className="flex justify-between"><span>Type</span><span>{order.orderType}</span></div>
             <div className="flex justify-between"><span>Placed</span><span>{new Date(order.createdAt).toLocaleString()}</span></div>
-            <div className="flex justify-between"><span>Subtotal</span><span>${Number(order.subtotal).toFixed(2)}</span></div>
-            <div className="flex justify-between"><span>Delivery fee</span><span>${Number(order.deliveryFee).toFixed(2)}</span></div>
-            <div className="flex justify-between font-bold text-slate-900"><span>Total</span><span>${Number(order.total).toFixed(2)}</span></div>
+            <div className="flex justify-between"><span>Subtotal</span><span>MMK {Number(order.subtotal).toFixed(2)}</span></div>
+            <div className="flex justify-between"><span>Delivery fee</span><span>MMK {Number(order.deliveryFee).toFixed(2)}</span></div>
+            <div className="flex justify-between font-bold text-slate-900"><span>Total</span><span>MMK {Number(order.total).toFixed(2)}</span></div>
           </div>
         </div>
       </div>

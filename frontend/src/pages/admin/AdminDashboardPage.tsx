@@ -99,7 +99,7 @@ export const AdminDashboardPage = () => {
     { label: 'Pending Orders', value: stats?.pendingOrders ?? 0 },
     { label: 'Active Orders', value: stats?.pendingOrders ?? 0 },
     { label: 'Completed Orders', value: stats?.completedOrders ?? 0 },
-    { label: 'Today\'s Revenue', value: `$${(stats?.todaysRevenue ?? 0).toFixed(2)}` },
+    { label: 'Today\'s Revenue', value: `MMK ${(stats?.todaysRevenue ?? 0).toFixed(2)}` },
     { label: 'Total Customers', value: stats?.totalCustomers ?? 0 },
     { label: 'Total Chefs', value: stats?.totalChefs ?? 0 },
     { label: 'Total Menu Items', value: stats?.totalMenuItems ?? 0 }
@@ -196,7 +196,7 @@ export const AdminDashboardPage = () => {
                     {food.isAvailable === false ? 'Hidden' : 'Available'}
                   </span>
                 </div>
-                <p className="font-semibold text-brand-700">${Number(food.price).toFixed(2)}</p>
+                <p className="font-semibold text-brand-700">MMK {Number(food.price).toFixed(2)}</p>
                 <div className="flex gap-2">
                   <button type="button" onClick={() => editFood(food)} className="rounded-full border border-slate-300 px-3 py-1.5 text-sm font-medium">Edit</button>
                   <button type="button" onClick={() => { if (window.confirm(`Delete ${food.name}?`)) deleteFood.mutate(food.id); }} className="rounded-full border border-red-200 px-3 py-1.5 text-sm font-medium text-red-600">Delete</button>

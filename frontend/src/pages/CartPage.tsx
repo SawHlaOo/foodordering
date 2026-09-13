@@ -26,9 +26,9 @@ export const CartPage = () => {
         <h2 className="text-xl font-bold">Order summary</h2>
         <div className="mt-4 space-y-3 text-sm text-slate-600">
           <div className="flex justify-between"><span>Items</span><span>{totalItems}</span></div>
-          <div className="flex justify-between"><span>Subtotal</span><span>${subtotal.toFixed(2)}</span></div>
-          <div className="flex justify-between"><span>Delivery</span><span>$0.00</span></div>
-          <div className="mt-4 border-t border-slate-200 pt-4 flex justify-between text-base font-bold text-slate-900"><span>Total</span><span>${subtotal.toFixed(2)}</span></div>
+          <div className="flex justify-between"><span>Subtotal</span><span>MMK {subtotal.toFixed(2)}</span></div>
+          <div className="flex justify-between"><span>Delivery</span><span>MMK 0.00</span></div>
+          <div className="mt-4 border-t border-slate-200 pt-4 flex justify-between text-base font-bold text-slate-900"><span>Total</span><span>MMK {subtotal.toFixed(2)}</span></div>
         </div>
         <Link to="/checkout" className="mt-6 block w-full rounded-full bg-brand-600 py-3 text-center font-semibold text-white">Checkout</Link>
       </aside>
