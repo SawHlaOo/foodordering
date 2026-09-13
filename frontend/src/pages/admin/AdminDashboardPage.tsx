@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../api/client';
 import type { Category, Food } from '../../types';
@@ -28,12 +29,15 @@ const emptyForm: FoodForm = {
 const slugify = (value: string) => value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
 export const AdminDashboardPage = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const queryClient = useQueryClient();
   const [form, setForm] = useState<FoodForm>(emptyForm);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formError, setFormError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const formSectionRef = useRef<HTMLElement | null>(null);
+  const activeTab = searchParams.get('tab') ?? 'overview';
 
   const { data: stats } = useQuery({
     queryKey: ['adminDashboard'],
@@ -117,7 +121,7 @@ export const AdminDashboardPage = () => {
     });
     setFormError('');
     setSuccessMessage('');
-    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    navigate('/admin/dashboard?tab=form');
   };
 
   const handleImage = (file: File | undefined) => {
@@ -158,22 +162,22 @@ export const AdminDashboardPage = () => {
         <p className="mt-1 text-slate-500">Manage the kitchen and restaurant menu from one place.</p>
       </div>
 
-      <section id="admin-overview" className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      {activeTab === 'overview' && <section id="admin-overview" className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {cards.map((card) => (
           <div key={card.label} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <p className="text-sm text-slate-500">{card.label}</p>
             <p className="mt-2 text-3xl font-black text-slate-900">{card.value}</p>
           </div>
         ))}
-      </section>
+      </section>}
 
-      <section id="admin-menu" className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      {activeTab === 'menu' && <section id="admin-menu" className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="text-2xl font-black text-slate-900">Food and drinks</h2>
             <p className="text-sm text-slate-500">Add, edit, remove, or temporarily hide menu items.</p>
           </div>
-          <button type="button" onClick={() => { setEditingId(null); setForm(emptyForm); setFormError(''); setSuccessMessage(''); formSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }} className="rounded-full bg-brand-600 px-4 py-2 font-semibold text-white">
+          <button type="button" onClick={() => { setEditingId(null); setForm(emptyForm); setFormError(''); setSuccessMessage(''); navigate('/admin/dashboard?tab=form'); }} className="rounded-full bg-brand-600 px-4 py-2 font-semibold text-white">
             Add new item
           </button>
         </div>
@@ -201,9 +205,9 @@ export const AdminDashboardPage = () => {
             </article>
           ))}
         </div>
-      </section>
+      </section>}
 
-      <section id="admin-completed" className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      {activeTab === 'completed' && <section id="admin-completed" className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="text-2xl font-black text-slate-900">Completed order records</h2>
         <p className="mt-1 text-sm text-slate-500">Customer name, food ordered, and completion date.</p>
         <div className="mt-5 space-y-3">
@@ -218,9 +222,9 @@ export const AdminDashboardPage = () => {
             </div>
           ))}
         </div>
-      </section>
+      </section>}
 
-      <section id="admin-menu-form" ref={formSectionRef} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      {activeTab === 'form' && <section id="admin-menu-form" ref={formSectionRef} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="text-2xl font-black text-slate-900">{editingId ? 'Edit menu item' : 'Add menu item'}</h2>
         <p className="mt-1 text-sm text-slate-500">Upload an image directly from your device. PNG, JPG, WEBP, and GIF up to 5 MB are supported.</p>
         {formError && <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">{formError}</p>}
@@ -251,7 +255,7 @@ export const AdminDashboardPage = () => {
             </button>
           </div>
         </form>
-      </section>
+      </section>}
     </div>
   );
 };
