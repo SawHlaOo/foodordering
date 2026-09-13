@@ -18,8 +18,8 @@ export const RegisterPage = () => {
   };
 
   return (
-    <div className="mx-auto max-w-md rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-      <h1 className="text-3xl font-black text-slate-900">Create account</h1>
+    <div className="mx-auto max-w-md rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
+      <h1 className="text-2xl font-black text-slate-900 sm:text-3xl">Create account</h1>
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
         <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Full name" className="w-full rounded-xl border border-slate-300 p-3" required />
         <input value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} type="email" placeholder="Email" className="w-full rounded-xl border border-slate-300 p-3" required />

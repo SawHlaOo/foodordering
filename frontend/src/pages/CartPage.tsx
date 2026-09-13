@@ -7,7 +7,7 @@ export const CartPage = () => {
 
   if (items.length === 0) {
     return (
-      <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center">
+      <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-6 text-center sm:p-12">
         <p className="text-xl font-bold">Your cart is empty</p>
         <p className="mt-2 text-slate-500">Add some delicious meals to get started.</p>
         <Link to="/menu" className="mt-6 inline-block rounded-full bg-brand-600 px-5 py-3 font-semibold text-white">Browse menu</Link>
@@ -22,7 +22,7 @@ export const CartPage = () => {
           <CartItem key={item.id} item={item} />
         ))}
       </div>
-      <aside className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <aside className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <h2 className="text-xl font-bold">Order summary</h2>
         <div className="mt-4 space-y-3 text-sm text-slate-600">
           <div className="flex justify-between"><span>Items</span><span>{totalItems}</span></div>

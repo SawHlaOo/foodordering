@@ -20,7 +20,7 @@ export const FoodDetailPage = () => {
   if (!food) return <div className="rounded-2xl bg-white p-8 text-center text-slate-600">Loading food details...</div>;
 
   return (
-    <div className="grid gap-8 md:grid-cols-2">
+    <div className="grid gap-5 md:grid-cols-2 md:gap-8">
       <div className="overflow-hidden rounded-3xl bg-white shadow-sm">
         <img src={food.imageUrl || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c'} alt={food.name} className="h-full w-full object-cover" />
       </div>
