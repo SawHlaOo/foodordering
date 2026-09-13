@@ -31,19 +31,16 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
     }
   });
 
-  const persist = (nextItems: CartItem[]) => {
-    localStorage.setItem('flavorflow_cart', JSON.stringify(nextItems));
-    setItems(nextItems);
-  };
-
   const addItem = (food: Food) => {
     const value = Number(food.price || 0);
-    const existing = items.find((item) => item.id === food.id);
-    if (existing) {
-      persist(items.map((item) => item.id === food.id ? { ...item, quantity: item.quantity + 1 } : item));
-      return;
-    }
-    persist([...items, { id: food.id, name: food.name, price: value, imageUrl: food.imageUrl, quantity: 1 }]);
+    setItems((currentItems) => {
+      const existing = currentItems.find((item) => item.id === food.id);
+      const nextItems = existing
+        ? currentItems.map((item) => item.id === food.id ? { ...item, quantity: item.quantity + 1 } : item)
+        : [...currentItems, { id: food.id, name: food.name, price: value, imageUrl: food.imageUrl, quantity: 1 }];
+      localStorage.setItem('flavorflow_cart', JSON.stringify(nextItems));
+      return nextItems;
+    });
   };
 
   const updateQuantity = (foodId: string, quantity: number) => {
@@ -51,15 +48,24 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
       removeItem(foodId);
       return;
     }
-    persist(items.map((item) => item.id === foodId ? { ...item, quantity } : item));
+    setItems((currentItems) => {
+      const nextItems = currentItems.map((item) => item.id === foodId ? { ...item, quantity } : item);
+      localStorage.setItem('flavorflow_cart', JSON.stringify(nextItems));
+      return nextItems;
+    });
   };
 
   const removeItem = (foodId: string) => {
-    persist(items.filter((item) => item.id !== foodId));
+    setItems((currentItems) => {
+      const nextItems = currentItems.filter((item) => item.id !== foodId);
+      localStorage.setItem('flavorflow_cart', JSON.stringify(nextItems));
+      return nextItems;
+    });
   };
 
   const clearCart = () => {
-    persist([]);
+    localStorage.setItem('flavorflow_cart', JSON.stringify([]));
+    setItems([]);
   };
 
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);

@@ -20,14 +20,14 @@ export const CartItem = ({ item }: CartItemProps) => {
         <h3 className="font-semibold text-slate-800">{item.name}</h3>
         <p className="text-sm text-slate-500">${item.price.toFixed(2)} each</p>
         <div className="mt-3 flex items-center gap-2">
-          <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="h-8 w-8 rounded-full border border-slate-300">-</button>
+          <button type="button" onClick={() => updateQuantity(item.id, item.quantity - 1)} className="h-8 w-8 rounded-full border border-slate-300">-</button>
           <span className="w-6 text-center font-medium">{item.quantity}</span>
-          <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="h-8 w-8 rounded-full border border-slate-300">+</button>
+          <button type="button" onClick={() => updateQuantity(item.id, item.quantity + 1)} className="h-8 w-8 rounded-full border border-slate-300">+</button>
         </div>
       </div>
       <div className="text-right">
         <p className="font-bold text-slate-800">${(item.price * item.quantity).toFixed(2)}</p>
-        <button onClick={() => removeItem(item.id)} className="mt-2 text-sm text-red-500">Remove</button>
+        <button type="button" onClick={() => removeItem(item.id)} className="mt-2 text-sm text-red-500">Remove</button>
       </div>
     </div>
   );

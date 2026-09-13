@@ -22,6 +22,7 @@ export const FoodCard = ({ food }: { food: Food }) => {
         <div className="mt-4 flex items-center justify-between">
           <span className="text-lg font-bold text-brand-600 sm:text-xl">${Number(food.price).toFixed(2)}</span>
           <button
+            type="button"
             disabled={food.isAvailable === false}
             onClick={() => addItem(food)}
             aria-label={`Add ${food.name} to cart`}

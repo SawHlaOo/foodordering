@@ -1,7 +1,8 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../api/client';
 
 export const ChefDashboardPage = () => {
+  const queryClient = useQueryClient();
   const { data: orders = [] } = useQuery({
     queryKey: ['chefOrders'],
     queryFn: () => api.get<any[]>('/chef/orders'),
@@ -9,10 +10,13 @@ export const ChefDashboardPage = () => {
     refetchIntervalInBackground: false
   });
 
-  const updateStatus = async (orderId: string, status: string) => {
-    await api.patch(`/chef/orders/${orderId}/status`, { status });
-    window.location.reload();
-  };
+  const updateStatus = useMutation({
+    mutationFn: ({ orderId, status }: { orderId: string; status: string }) =>
+      api.patch(`/chef/orders/${orderId}/status`, { status }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['chefOrders'] });
+    }
+  });
 
   return (
     <div className="space-y-6">
@@ -35,11 +39,12 @@ export const ChefDashboardPage = () => {
               ))}
             </div>
             <div className="mt-5 flex flex-wrap gap-2">
-              {order.status === 'PENDING' && <button onClick={() => updateStatus(order.id, 'CONFIRMED')} className="rounded-full bg-brand-600 px-3 py-2 text-sm font-medium text-white">Accept order</button>}
-              {order.status === 'CONFIRMED' && <button onClick={() => updateStatus(order.id, 'PREPARING')} className="rounded-full bg-brand-600 px-3 py-2 text-sm font-medium text-white">Start preparing</button>}
-              {order.status === 'PREPARING' && <button onClick={() => updateStatus(order.id, 'READY')} className="rounded-full bg-brand-600 px-3 py-2 text-sm font-medium text-white">Mark ready</button>}
-              {order.status === 'READY' && <button onClick={() => updateStatus(order.id, 'COMPLETED')} className="rounded-full bg-brand-600 px-3 py-2 text-sm font-medium text-white">Complete</button>}
+              {order.status === 'PENDING' && <button type="button" disabled={updateStatus.isPending && updateStatus.variables?.orderId === order.id} onClick={() => updateStatus.mutate({ orderId: order.id, status: 'CONFIRMED' })} className="rounded-full bg-brand-600 px-3 py-2 text-sm font-medium text-white disabled:opacity-60">Accept order</button>}
+              {order.status === 'CONFIRMED' && <button type="button" disabled={updateStatus.isPending && updateStatus.variables?.orderId === order.id} onClick={() => updateStatus.mutate({ orderId: order.id, status: 'PREPARING' })} className="rounded-full bg-brand-600 px-3 py-2 text-sm font-medium text-white disabled:opacity-60">Start preparing</button>}
+              {order.status === 'PREPARING' && <button type="button" disabled={updateStatus.isPending && updateStatus.variables?.orderId === order.id} onClick={() => updateStatus.mutate({ orderId: order.id, status: 'READY' })} className="rounded-full bg-brand-600 px-3 py-2 text-sm font-medium text-white disabled:opacity-60">Mark ready</button>}
+              {order.status === 'READY' && <button type="button" disabled={updateStatus.isPending && updateStatus.variables?.orderId === order.id} onClick={() => updateStatus.mutate({ orderId: order.id, status: 'COMPLETED' })} className="rounded-full bg-brand-600 px-3 py-2 text-sm font-medium text-white disabled:opacity-60">Complete</button>}
             </div>
+            {updateStatus.isError && <p role="alert" className="mt-3 text-sm text-red-600">{updateStatus.error instanceof Error ? updateStatus.error.message : 'Unable to update order status'}</p>}
           </div>
         ))}
       </div>

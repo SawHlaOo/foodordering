@@ -16,7 +16,7 @@ export const Layout = () => {
             {user ? (
               <>
                 <Link to="/profile" className="max-w-[110px] truncate rounded-full bg-slate-100 px-2.5 py-2 text-xs font-medium sm:max-w-none sm:px-3 sm:text-sm">{user.name}</Link>
-                <button onClick={logout} className="rounded-full border border-slate-300 px-2.5 py-2 text-xs sm:px-3 sm:text-sm">Logout</button>
+                <button type="button" onClick={logout} className="rounded-full border border-slate-300 px-2.5 py-2 text-xs sm:px-3 sm:text-sm">Logout</button>
               </>
             ) : (
               <>
