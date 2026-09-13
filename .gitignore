@@ -1,0 +1,15 @@
+node_modules/
+dist/
+*.tsbuildinfo
+frontend/vite.config.js
+frontend/vite.config.d.ts
+
+# Local secrets and environment overrides
+.env
+.env.*
+!.env.example
+
+# Local tooling and logs
+.vscode/*
+!.vscode/extensions.json
+*.log
