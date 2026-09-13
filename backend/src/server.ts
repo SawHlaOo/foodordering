@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import * as helmetModule from 'helmet';
 import { rateLimit } from 'express-rate-limit';
-import serverless from 'serverless-http';
 import { env } from './config/env.js';
 import authRoutes from './routes/authRoutes.js';
 import foodRoutes from './routes/foodRoutes.js';
@@ -77,5 +76,4 @@ if (process.env.NODE_ENV !== 'production' && !process.env.VERCEL) {
   });
 }
 
-export const handler = serverless(app);
 export default app;
