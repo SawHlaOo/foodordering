@@ -3,6 +3,13 @@ const API_URL = configuredApiUrl.endsWith('/api') ? configuredApiUrl : `${config
 
 export type ApiResponse<T> = { success: true; data: T } | { success: false; message: string };
 
+export class ApiRequestError extends Error {
+  constructor(message: string, public readonly status: number) {
+    super(message);
+    this.name = 'ApiRequestError';
+  }
+}
+
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const headers = new Headers(options.headers || {});
   if (!(options.body instanceof FormData)) {
@@ -18,7 +25,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const parsed = await response.json();
 
   if (!response.ok || parsed.success === false) {
-    throw new Error(parsed.message || 'Request failed');
+    throw new ApiRequestError(parsed.message || 'Request failed', response.status);
   }
 
   return parsed.data as T;
