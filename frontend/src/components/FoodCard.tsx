@@ -24,9 +24,15 @@ export const FoodCard = ({ food }: { food: Food }) => {
           <button
             disabled={food.isAvailable === false}
             onClick={() => addItem(food)}
-            className="rounded-full bg-brand-600 px-3 py-2 text-xs font-medium text-white sm:px-4 sm:text-sm disabled:cursor-not-allowed disabled:bg-slate-300"
+            aria-label={`Add ${food.name} to cart`}
+            title="Add to cart"
+            className="rounded-full bg-brand-600 p-2.5 text-white disabled:cursor-not-allowed disabled:bg-slate-300"
           >
-            Add to cart
+            <svg aria-hidden="true" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="9" cy="20" r="1" />
+              <circle cx="19" cy="20" r="1" />
+              <path d="M3 4h2l2.4 11.4a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L21 8H6" />
+            </svg>
           </button>
         </div>
       </div>
