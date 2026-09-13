@@ -3,6 +3,7 @@ import { prisma } from '../lib/prisma.js';
 import { menuService } from '../services/menuService.js';
 import { orderService } from '../services/orderService.js';
 import { sendSuccess } from '../utils/api.js';
+import { ApiError } from '../middleware/errorHandler.js';
 
 export const adminController = {
   dashboard: async (req: Request, res: Response, next: NextFunction) => {
@@ -40,6 +41,20 @@ export const adminController = {
         foodNames: order.items.map((item) => item.food.name),
         completedAt: order.updatedAt
       }))));
+    } catch (error) {
+      next(error);
+    }
+  },
+  deleteCompletedOrder: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const id = String(req.params.id);
+      const order = await prisma.order.findUnique({ where: { id }, select: { status: true } });
+      if (!order) throw new ApiError('Order not found.', 404);
+      if (order.status !== 'COMPLETED') {
+        throw new ApiError('Only completed orders can be removed.', 400);
+      }
+      await prisma.order.delete({ where: { id } });
+      res.json(sendSuccess({ id }));
     } catch (error) {
       next(error);
     }
