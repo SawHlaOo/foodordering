@@ -20,7 +20,7 @@ export const FoodCard = ({ food }: { food: Food }) => {
         <Link to={`/foods/${food.id}`} className="text-lg font-bold text-slate-800">{food.name}</Link>
         <p className="mt-2 line-clamp-2 text-xs text-slate-600 sm:text-sm">{food.description}</p>
         <div className="mt-4 flex items-center justify-between">
-          <span className="text-lg font-bold text-brand-600 sm:text-xl">${Number(food.price).toFixed(2)}</span>
+          <span className="text-lg font-bold text-brand-600 sm:text-xl">MMK {Number(food.price).toFixed(2)}</span>
           <button
             type="button"
             disabled={food.isAvailable === false}

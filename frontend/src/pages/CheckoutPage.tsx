@@ -104,13 +104,13 @@ export const CheckoutPage = () => {
           {items.map((item) => (
             <div key={item.id} className="flex items-center justify-between text-sm text-slate-600">
               <span>{item.name} x {item.quantity}</span>
-              <span>${(item.price * item.quantity).toFixed(2)}</span>
+              <span>MMK {(item.price * item.quantity).toFixed(2)}</span>
             </div>
           ))}
         </div>
         <div className="mt-4 border-t border-slate-200 pt-4 text-sm text-slate-600">
-          <div className="flex justify-between"><span>Subtotal</span><span>${subtotal.toFixed(2)}</span></div>
-          <div className="mt-2 flex justify-between font-bold text-slate-900"><span>Total</span><span>${subtotal.toFixed(2)}</span></div>
+          <div className="flex justify-between"><span>Subtotal</span><span>MMK {subtotal.toFixed(2)}</span></div>
+          <div className="mt-2 flex justify-between font-bold text-slate-900"><span>Total</span><span>MMK {subtotal.toFixed(2)}</span></div>
         </div>
       </aside>
     </form>

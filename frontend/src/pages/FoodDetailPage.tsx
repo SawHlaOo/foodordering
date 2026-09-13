@@ -29,7 +29,7 @@ export const FoodDetailPage = () => {
         <h1 className="text-4xl font-black text-slate-900">{food.name}</h1>
         <p className="text-lg text-slate-600">{food.description}</p>
         <div className="flex items-center gap-4">
-          <span className="text-3xl font-black text-brand-600">${Number(food.price).toFixed(2)}</span>
+          <span className="text-3xl font-black text-brand-600">MMK {Number(food.price).toFixed(2)}</span>
           <span className={`rounded-full px-3 py-1 text-sm font-medium ${food.isAvailable === false ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-700'}`}>
             {food.isAvailable === false ? 'Currently unavailable' : 'Available'}
           </span>
