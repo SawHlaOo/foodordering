@@ -45,14 +45,15 @@ export const FoodDetailPage = () => {
 
         <div className="flex items-center gap-3">
           <span className="font-semibold text-slate-800">Quantity</span>
-          <button onClick={() => setQuantity((value) => Math.max(1, value - 1))} className="h-10 w-10 rounded-full border border-slate-300">-</button>
+          <button type="button" onClick={() => setQuantity((value) => Math.max(1, value - 1))} className="h-10 w-10 rounded-full border border-slate-300">-</button>
           <span className="w-8 text-center font-bold">{quantity}</span>
-          <button onClick={() => setQuantity((value) => value + 1)} className="h-10 w-10 rounded-full border border-slate-300">+</button>
+          <button type="button" onClick={() => setQuantity((value) => value + 1)} className="h-10 w-10 rounded-full border border-slate-300">+</button>
         </div>
 
         <textarea value={note} onChange={(e) => setNote(e.target.value)} placeholder="Add a note for your order" className="w-full rounded-2xl border border-slate-300 p-3" rows={4} />
 
         <button
+          type="button"
           disabled={food.isAvailable === false}
           onClick={() => {
             for (let i = 0; i < quantity; i += 1) addItem(food);
