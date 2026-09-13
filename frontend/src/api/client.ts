@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+const API_URL = (import.meta.env.VITE_API_URL || 'https://ordersysbackend.vercel.app/api').replace(/\/$/, '');
 
 export type ApiResponse<T> = { success: true; data: T } | { success: false; message: string };
 
