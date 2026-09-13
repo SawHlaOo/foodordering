@@ -26,7 +26,7 @@ export const CheckoutPage = () => {
       setErrorMessage('Full name must contain at least 2 characters.');
       return;
     }
-    if (customerPhone.trim().length < 7) {
+    if (orderType === 'DELIVERY' && customerPhone.trim().length < 7) {
       setErrorMessage('Phone number must contain at least 7 characters.');
       return;
     }
@@ -44,7 +44,7 @@ export const CheckoutPage = () => {
       const payload = {
         orderType,
         customerName,
-        customerPhone,
+        customerPhone: customerPhone.trim() || undefined,
         tableNumber: orderType === 'DINE_IN' ? Number(tableNumber) : undefined,
         deliveryAddress: orderType === 'DELIVERY' ? deliveryAddress : undefined,
         customerNote,
@@ -69,7 +69,7 @@ export const CheckoutPage = () => {
 
         <div className="grid gap-4 md:grid-cols-2">
           <input value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder="Full name" className="rounded-xl border border-slate-300 p-3" required />
-          <input value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} placeholder="Phone number" className="rounded-xl border border-slate-300 p-3" required />
+          <input value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} placeholder={orderType === 'DELIVERY' ? 'Phone number' : 'Phone number (optional)'} className="rounded-xl border border-slate-300 p-3" required={orderType === 'DELIVERY'} />
         </div>
 
         <div>
