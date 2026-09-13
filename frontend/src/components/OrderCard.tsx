@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import type { Order } from '../types';
 
-export const OrderCard = ({ order }: { order: Order }) => (
+export const OrderCard = ({ order, onRemove }: { order: Order; onRemove?: (order: Order) => void }) => (
   <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
     <div className="flex items-center justify-between">
       <div>
@@ -12,7 +12,12 @@ export const OrderCard = ({ order }: { order: Order }) => (
     </div>
     <p className="mt-2 text-sm text-slate-600">Type: {order.orderType}</p>
     <p className="text-sm text-slate-600">Placed: {new Date(order.createdAt).toLocaleString()}</p>
-    <div className="mt-4 flex justify-end">
+    <div className="mt-4 flex flex-wrap justify-end gap-2">
+      {order.status === 'COMPLETED' && onRemove && (
+        <button type="button" onClick={() => onRemove(order)} className="rounded-full border border-red-200 px-4 py-2 text-sm font-medium text-red-600">
+          Remove
+        </button>
+      )}
       <Link to={`/orders/${order.id}`} className="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white">View details</Link>
     </div>
   </div>

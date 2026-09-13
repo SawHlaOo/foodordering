@@ -25,5 +25,6 @@ export const orderRepo = {
   }),
   create: (data: OrderCreateInput) => prisma.order.create({ data }),
   update: (id: string, data: OrderUpdateInput) => prisma.order.update({ where: { id }, data }),
+  delete: (id: string) => prisma.order.delete({ where: { id } }),
   createItem: (data: OrderItemCreateInput) => prisma.orderItem.create({ data })
 };

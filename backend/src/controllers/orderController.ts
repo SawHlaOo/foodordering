@@ -36,5 +36,14 @@ export const orderController = {
     } catch (error) {
       next(error);
     }
+  },
+  deleteCompleted: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const id = String(req.params.id);
+      await orderService.deleteCompletedOrder(req.user!.userId, id);
+      res.json(sendSuccess({ id }));
+    } catch (error) {
+      next(error);
+    }
   }
 };

@@ -79,6 +79,15 @@ export const orderService = {
     }
     return orderRepo.update(orderId, { status: 'CANCELLED' });
   },
+  deleteCompletedOrder: async (customerId: string, orderId: string) => {
+    const order = await orderRepo.findById(orderId);
+    if (!order) throw new ApiError('Order not found.', 404);
+    if (order.customerId !== customerId) throw new ApiError('You can only remove your own orders.', 403);
+    if (order.status !== 'COMPLETED') {
+      throw new ApiError('Only completed orders can be removed.', 400);
+    }
+    return orderRepo.delete(orderId);
+  },
   getChefOrders: async () => orderRepo.listForChef(),
   updateChefStatus: async (chefId: string, orderId: string, status: string) => {
     const order = await orderRepo.findById(orderId);
