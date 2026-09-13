@@ -5,8 +5,9 @@ import { orderRepo } from '../repositories/orderRepo.js';
 
 const orderFlow: Record<string, string[]> = {
   PENDING: ['CONFIRMED', 'CANCELLED', 'REJECTED'],
-  CONFIRMED: ['PREPARING', 'CANCELLED'],
-  PREPARING: ['READY', 'CANCELLED'],
+  CONFIRMED: ['COMPLETED', 'CANCELLED'],
+  // Legacy orders can still be completed after the workflow is shortened.
+  PREPARING: ['COMPLETED', 'CANCELLED'],
   READY: ['COMPLETED', 'CANCELLED'],
   COMPLETED: [],
   CANCELLED: [],
@@ -95,7 +96,7 @@ export const orderService = {
     if (status === 'CONFIRMED') {
       updatePayload.chefId = chefId;
     }
-    if (status === 'PREPARING' || status === 'READY' || status === 'COMPLETED') {
+    if (status === 'COMPLETED') {
       updatePayload.chefId = order.chefId ?? chefId;
     }
 

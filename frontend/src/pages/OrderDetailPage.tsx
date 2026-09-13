@@ -6,6 +6,7 @@ import type { Order } from '../types';
 
 export const OrderDetailPage = () => {
   const { id } = useParams();
+  const displayStatus = (status: string) => status === 'PREPARING' || status === 'READY' ? 'CONFIRMED' : status;
 
   const { data: order } = useQuery({
     queryKey: ['order', id],
@@ -23,7 +24,7 @@ export const OrderDetailPage = () => {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm uppercase tracking-[0.2em] text-slate-500">Order #{order.orderNumber}</p>
-            <h1 className="text-2xl font-black text-slate-900">{order.status}</h1>
+            <h1 className="text-2xl font-black text-slate-900">{displayStatus(order.status)}</h1>
           </div>
           <span className="text-xl font-bold text-brand-600">${Number(order.total).toFixed(2)}</span>
         </div>
