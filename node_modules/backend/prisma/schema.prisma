@@ -1,0 +1,119 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  CUSTOMER
+  CHEF
+  ADMIN
+}
+
+enum OrderType {
+  DINE_IN
+  TAKEAWAY
+  DELIVERY
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PREPARING
+  READY
+  COMPLETED
+  CANCELLED
+  REJECTED
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  phone     String?
+  password  String
+  role      Role     @default(CUSTOMER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  customerOrders Order[] @relation("customerOrders")
+  chefAssigned   Order[] @relation("chefOrders")
+
+  @@index([role])
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  imageUrl    String?
+  isAvailable Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  foods       Food[]
+
+  @@index([isAvailable])
+}
+
+model Food {
+  id              String      @id @default(cuid())
+  name            String
+  slug            String      @unique
+  description     String
+  price           Decimal     @db.Decimal(10, 2)
+  imageUrl        String?
+  categoryId      String
+  ingredients     String[]
+  preparationTime Int         @default(15)
+  isAvailable     Boolean     @default(true)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  category   Category    @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  orderItems OrderItem[]
+
+  @@index([categoryId])
+  @@index([isAvailable])
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  orderNumber     String      @unique
+  customerId      String
+  chefId          String?
+  orderType       OrderType
+  status          OrderStatus @default(PENDING)
+  tableNumber     Int?
+  deliveryAddress String?
+  customerNote    String?
+  subtotal        Decimal     @db.Decimal(10, 2)
+  deliveryFee     Decimal     @db.Decimal(10, 2)
+  total           Decimal     @db.Decimal(10, 2)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  customer User       @relation("customerOrders", fields: [customerId], references: [id], onDelete: Restrict)
+  chef     User?      @relation("chefOrders", fields: [chefId], references: [id], onDelete: SetNull)
+  items    OrderItem[]
+
+  @@index([status])
+  @@index([customerId])
+  @@index([chefId])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id       String  @id @default(cuid())
+  orderId  String
+  foodId   String
+  quantity Int
+  price    Decimal @db.Decimal(10, 2)
+  note     String?
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  food  Food  @relation(fields: [foodId], references: [id], onDelete: Restrict)
+}
