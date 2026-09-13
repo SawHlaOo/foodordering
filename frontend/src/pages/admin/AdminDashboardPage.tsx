@@ -158,16 +158,16 @@ export const AdminDashboardPage = () => {
         <p className="mt-1 text-slate-500">Manage the kitchen and restaurant menu from one place.</p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+      <section id="admin-overview" className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {cards.map((card) => (
           <div key={card.label} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
             <p className="text-sm text-slate-500">{card.label}</p>
             <p className="mt-2 text-3xl font-black text-slate-900">{card.value}</p>
           </div>
         ))}
-      </div>
+      </section>
 
-      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <section id="admin-menu" className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="text-2xl font-black text-slate-900">Food and drinks</h2>
@@ -178,32 +178,29 @@ export const AdminDashboardPage = () => {
           </button>
         </div>
 
-        <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <div className="mt-5 divide-y divide-slate-200 rounded-2xl border border-slate-200">
           {foods.map((food) => (
-            <article key={food.id} className="overflow-hidden rounded-2xl border border-slate-200">
-              {food.imageUrl ? <img src={food.imageUrl} alt={food.name} className="h-40 w-full object-cover" /> : <div className="flex h-40 items-center justify-center bg-slate-100 text-slate-400">No image</div>}
-              <div className="space-y-3 p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <h3 className="font-bold text-slate-900">{food.name}</h3>
-                    <p className="text-sm text-slate-500">{categoryName.get(food.categoryId) ?? food.category?.name}</p>
-                  </div>
+            <article key={food.id} className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h3 className="font-bold text-slate-900">{food.name}</h3>
                   <span className={`rounded-full px-2 py-1 text-xs font-semibold ${food.isAvailable === false ? 'bg-slate-100 text-slate-500' : 'bg-emerald-100 text-emerald-700'}`}>
                     {food.isAvailable === false ? 'Hidden' : 'Available'}
                   </span>
                 </div>
+                <p className="mt-1 truncate text-sm text-slate-500">{categoryName.get(food.categoryId) ?? food.category?.name} · {food.description}</p>
+              </div>
+              <div className="flex shrink-0 items-center justify-between gap-3 sm:justify-end">
                 <p className="font-semibold text-brand-700">${Number(food.price).toFixed(2)}</p>
-                <div className="flex gap-2">
-                  <button type="button" onClick={() => editFood(food)} className="rounded-full border border-slate-300 px-3 py-1.5 text-sm font-medium">Edit</button>
-                  <button type="button" onClick={() => { if (window.confirm(`Delete ${food.name}?`)) deleteFood.mutate(food.id); }} className="rounded-full border border-red-200 px-3 py-1.5 text-sm font-medium text-red-600">Delete</button>
-                </div>
+                <button type="button" onClick={() => editFood(food)} className="rounded-full border border-slate-300 px-3 py-1.5 text-sm font-medium">Edit</button>
+                <button type="button" onClick={() => { if (window.confirm(`Delete ${food.name}?`)) deleteFood.mutate(food.id); }} className="rounded-full border border-red-200 px-3 py-1.5 text-sm font-medium text-red-600">Delete</button>
               </div>
             </article>
           ))}
         </div>
       </section>
 
-      <section ref={formSectionRef} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <section id="admin-completed" className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="text-2xl font-black text-slate-900">Completed order records</h2>
         <p className="mt-1 text-sm text-slate-500">Customer name, food ordered, and completion date.</p>
         <div className="mt-5 space-y-3">
@@ -220,7 +217,7 @@ export const AdminDashboardPage = () => {
         </div>
       </section>
 
-      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <section id="admin-menu-form" ref={formSectionRef} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="text-2xl font-black text-slate-900">{editingId ? 'Edit menu item' : 'Add menu item'}</h2>
         <p className="mt-1 text-sm text-slate-500">Upload an image directly from your device. PNG, JPG, WEBP, and GIF up to 5 MB are supported.</p>
         {formError && <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">{formError}</p>}
