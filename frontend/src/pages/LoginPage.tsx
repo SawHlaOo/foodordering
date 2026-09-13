@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 export const LoginPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
   const [email, setEmail] = useState('customer1@flavorflow.com');
   const [password, setPassword] = useState('Password123!');
@@ -12,7 +13,10 @@ export const LoginPage = () => {
     event.preventDefault();
     try {
       const loggedInUser = await login(email, password);
-      if (loggedInUser.role === 'CHEF') navigate('/chef/dashboard');
+      const from = (location.state as { from?: { pathname?: string; search?: string; hash?: string } } | null)?.from;
+      if (from?.pathname) {
+        navigate(`${from.pathname}${from.search || ''}${from.hash || ''}`, { replace: true });
+      } else if (loggedInUser.role === 'CHEF') navigate('/chef/dashboard');
       else if (loggedInUser.role === 'ADMIN') navigate('/admin/dashboard');
       else navigate('/');
     } catch (error) {

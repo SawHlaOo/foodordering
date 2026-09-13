@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { api } from '../api/client';
+import { api, ApiRequestError } from '../api/client';
 import type { Role, User } from '../types';
 
 type AuthContextValue = {
@@ -30,10 +30,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const profile = await api.get<{ id: string; name: string; email: string; role: Role; phone?: string | null }>('/auth/me');
       setUser({ ...profile, id: profile.id, role: profile.role });
-    } catch {
-      localStorage.removeItem('flavorflow_token');
-      setToken(null);
-      setUser(null);
+    } catch (error) {
+      if (error instanceof ApiRequestError && error.status === 401) {
+        localStorage.removeItem('flavorflow_token');
+        setToken(null);
+        setUser(null);
+      }
     } finally {
       setLoading(false);
     }
