@@ -1,7 +1,8 @@
-const steps = ['PENDING', 'CONFIRMED', 'PREPARING', 'READY', 'COMPLETED'];
+const steps = ['PENDING', 'CONFIRMED', 'COMPLETED'];
 
 export const OrderStatusTracker = ({ currentStatus }: { currentStatus: string }) => {
-  const currentIndex = steps.indexOf(currentStatus);
+  const displayStatus = currentStatus === 'PREPARING' || currentStatus === 'READY' ? 'CONFIRMED' : currentStatus;
+  const currentIndex = steps.indexOf(displayStatus);
 
   return (
     <div className="flex flex-wrap gap-3 rounded-2xl border border-slate-200 bg-white p-4">

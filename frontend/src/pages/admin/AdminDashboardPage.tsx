@@ -88,7 +88,7 @@ export const AdminDashboardPage = () => {
   const cards = [
     { label: 'Today\'s Orders', value: stats?.todaysOrders ?? 0 },
     { label: 'Pending Orders', value: stats?.pendingOrders ?? 0 },
-    { label: 'Preparing Orders', value: stats?.preparingOrders ?? 0 },
+    { label: 'Active Orders', value: stats?.pendingOrders ?? 0 },
     { label: 'Completed Orders', value: stats?.completedOrders ?? 0 },
     { label: 'Today\'s Revenue', value: `$${(stats?.todaysRevenue ?? 0).toFixed(2)}` },
     { label: 'Total Customers', value: stats?.totalCustomers ?? 0 },
