@@ -94,6 +94,16 @@ export const AdminDashboardPage = () => {
     onError: (error: Error) => setFormError(error.message)
   });
 
+  const deleteCompletedOrder = useMutation({
+    mutationFn: (id: string) => api.delete(`/admin/completed-orders/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['adminCompletedOrders'] });
+      queryClient.invalidateQueries({ queryKey: ['adminDashboard'] });
+      setSuccessMessage('Completed order removed.');
+    },
+    onError: (error: Error) => setFormError(error.message)
+  });
+
   const cards = [
     { label: 'Today\'s Orders', value: stats?.todaysOrders ?? 0 },
     { label: 'Pending Orders', value: stats?.pendingOrders ?? 0 },
@@ -218,7 +228,22 @@ export const AdminDashboardPage = () => {
                 <p className="font-semibold text-slate-900">{order.customerName}</p>
                 <p className="text-sm text-slate-600">{order.foodNames.join(', ')}</p>
               </div>
-              <time dateTime={order.completedAt} className="text-sm text-slate-500">{new Date(order.completedAt).toLocaleString()}</time>
+              <div className="flex items-center justify-between gap-3 sm:justify-end">
+                <time dateTime={order.completedAt} className="text-sm text-slate-500">{new Date(order.completedAt).toLocaleString()}</time>
+                <button
+                  type="button"
+                  disabled={deleteCompletedOrder.isPending}
+                  onClick={() => {
+                    if (window.confirm(`Remove the completed order for ${order.customerName}?`)) {
+                      setFormError('');
+                      deleteCompletedOrder.mutate(order.id);
+                    }
+                  }}
+                  className="rounded-full border border-red-200 px-3 py-1.5 text-sm font-medium text-red-600 disabled:opacity-60"
+                >
+                  Remove
+                </button>
+              </div>
             </div>
           ))}
         </div>
