@@ -178,9 +178,9 @@ export const AdminDashboardPage = () => {
           </button>
         </div>
 
-        <div className="mt-5 grid gap-3 md:grid-cols-2">
+        <div className="mt-5 divide-y divide-slate-200 rounded-2xl border border-slate-200">
           {foods.map((food) => (
-            <article key={food.id} className="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+            <article key={food.id} className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
                   <h3 className="font-bold text-slate-900">{food.name}</h3>
