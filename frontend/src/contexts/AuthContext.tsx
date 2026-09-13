@@ -6,8 +6,8 @@ type AuthContextValue = {
   user: User | null;
   token: string | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (name: string, email: string, password: string, phone?: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<User>;
+  register: (name: string, email: string, password: string, phone?: string) => Promise<User>;
   logout: () => void;
   refreshUser: () => Promise<void>;
 };
@@ -48,6 +48,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.setItem('flavorflow_token', result.token);
     setToken(result.token);
     setUser(result.user);
+    return result.user;
   };
 
   const register = async (name: string, email: string, password: string, phone?: string) => {
@@ -55,6 +56,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     localStorage.setItem('flavorflow_token', result.token);
     setToken(result.token);
     setUser(result.user);
+    return result.user;
   };
 
   const logout = () => {
