@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
-import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
+import * as helmetModule from 'helmet';
+import { rateLimit } from 'express-rate-limit';
 import serverless from 'serverless-http';
 import { env } from './config/env.js';
 import authRoutes from './routes/authRoutes.js';
@@ -15,7 +15,7 @@ import { errorHandler, notFound } from './middleware/errorHandler.js';
 const app = express();
 app.set('trust proxy', 1);
 
-app.use(helmet());
+app.use(helmetModule.default());
 app.use(cors({
   origin: (requestOrigin, callback) => {
     if (!requestOrigin || env.corsOrigins.includes(requestOrigin)) {
@@ -33,7 +33,7 @@ app.use(rateLimit({
   limit: 2000,
   standardHeaders: 'draft-7',
   legacyHeaders: false,
-  skip: (request) => request.path === '/health'
+  skip: (request: express.Request) => request.path === '/health'
 }));
 app.use('/api/auth', rateLimit({
   windowMs: 15 * 60 * 1000,
