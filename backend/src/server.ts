@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import compression from 'compression';
 import * as helmetModule from 'helmet';
 import { rateLimit } from 'express-rate-limit';
 import { env } from './config/env.js';
@@ -19,6 +20,7 @@ const helmet = (helmetModule as unknown as {
 }).default;
 
 app.use(helmet());
+app.use(compression());
 app.use(cors({
   origin: (requestOrigin, callback) => {
     if (!requestOrigin || env.corsOrigins.includes(requestOrigin)) {
@@ -51,7 +53,7 @@ const publicCache = (req: express.Request, res: express.Response, next: express.
     return;
   }
 
-  res.set('Cache-Control', 'public, max-age=30, s-maxage=60, stale-while-revalidate=120');
+  res.set('Cache-Control', 'public, max-age=60, s-maxage=300, stale-while-revalidate=600');
   next();
 };
 
