@@ -4,16 +4,16 @@ import { useAuth } from '../contexts/AuthContext';
 
 export const LoginPage = () => {
   const navigate = useNavigate();
-  const { login, user } = useAuth();
+  const { login } = useAuth();
   const [email, setEmail] = useState('customer1@flavorflow.com');
   const [password, setPassword] = useState('Password123!');
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      await login(email, password);
-      if (user?.role === 'CHEF') navigate('/chef/dashboard');
-      else if (user?.role === 'ADMIN') navigate('/admin/dashboard');
+      const loggedInUser = await login(email, password);
+      if (loggedInUser.role === 'CHEF') navigate('/chef/dashboard');
+      else if (loggedInUser.role === 'ADMIN') navigate('/admin/dashboard');
       else navigate('/');
     } catch (error) {
       alert(error instanceof Error ? error.message : 'Login failed');
