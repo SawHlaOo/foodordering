@@ -27,17 +27,12 @@ export const Layout = () => {
             </div>
           </div>
           <nav aria-label="Primary navigation" className="flex items-center gap-4 overflow-x-auto pt-3 text-sm whitespace-nowrap md:gap-5">
-            {user?.role === 'ADMIN' ? (
-              <NavLink to="/admin/dashboard" className={({ isActive }) => `font-medium ${isActive ? 'text-brand-600' : 'text-slate-600'}`}>Admin dashboard</NavLink>
-            ) : (
-              <>
-                <NavLink to="/" className={({ isActive }) => `font-medium ${isActive ? 'text-brand-600' : 'text-slate-600'}`}>Home</NavLink>
-                <NavLink to="/menu" className={({ isActive }) => `font-medium ${isActive ? 'text-brand-600' : 'text-slate-600'}`}>Menu</NavLink>
-                <NavLink to="/orders" className={({ isActive }) => `font-medium ${isActive ? 'text-brand-600' : 'text-slate-600'}`}>Orders</NavLink>
-                <NavLink to="/cart" className={({ isActive }) => `font-medium ${isActive ? 'text-brand-600' : 'text-slate-600'}`}>Cart ({totalItems})</NavLink>
-                {user?.role === 'CHEF' && <NavLink to="/chef/dashboard" className="font-medium text-slate-600">Kitchen</NavLink>}
-              </>
-            )}
+            <NavLink to="/" className={({ isActive }) => `font-medium ${isActive ? 'text-brand-600' : 'text-slate-600'}`}>Home</NavLink>
+            <NavLink to="/menu" className={({ isActive }) => `font-medium ${isActive ? 'text-brand-600' : 'text-slate-600'}`}>Menu</NavLink>
+            <NavLink to="/orders" className={({ isActive }) => `font-medium ${isActive ? 'text-brand-600' : 'text-slate-600'}`}>Orders</NavLink>
+            <NavLink to="/cart" className={({ isActive }) => `font-medium ${isActive ? 'text-brand-600' : 'text-slate-600'}`}>Cart ({totalItems})</NavLink>
+            {user?.role === 'CHEF' && <NavLink to="/chef/dashboard" className="font-medium text-slate-600">Kitchen</NavLink>}
+            {user?.role === 'ADMIN' && <NavLink to="/admin/dashboard" className="font-medium text-slate-600">Admin</NavLink>}
           </nav>
         </div>
       </header>
