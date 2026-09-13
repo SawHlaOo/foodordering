@@ -69,7 +69,9 @@ export const CheckoutPage = () => {
 
         <div className="grid gap-4 md:grid-cols-2">
           <input value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder="Full name" className="rounded-xl border border-slate-300 p-3" required />
-          <input value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} placeholder={orderType === 'DELIVERY' ? 'Phone number' : 'Phone number (optional)'} className="rounded-xl border border-slate-300 p-3" required={orderType === 'DELIVERY'} />
+          {orderType === 'DELIVERY' && (
+            <input value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} placeholder="Phone number" className="rounded-xl border border-slate-300 p-3" required />
+          )}
         </div>
 
         <div>

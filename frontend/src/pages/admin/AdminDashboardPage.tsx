@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../api/client';
 import type { Category, Food } from '../../types';
@@ -33,6 +33,7 @@ export const AdminDashboardPage = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formError, setFormError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const formSectionRef = useRef<HTMLElement | null>(null);
 
   const { data: stats } = useQuery({
     queryKey: ['adminDashboard'],
@@ -172,7 +173,7 @@ export const AdminDashboardPage = () => {
             <h2 className="text-2xl font-black text-slate-900">Food and drinks</h2>
             <p className="text-sm text-slate-500">Add, edit, remove, or temporarily hide menu items.</p>
           </div>
-          <button type="button" onClick={() => { setEditingId(null); setForm(emptyForm); setFormError(''); setSuccessMessage(''); }} className="rounded-full bg-brand-600 px-4 py-2 font-semibold text-white">
+          <button type="button" onClick={() => { setEditingId(null); setForm(emptyForm); setFormError(''); setSuccessMessage(''); formSectionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }} className="rounded-full bg-brand-600 px-4 py-2 font-semibold text-white">
             Add new item
           </button>
         </div>
@@ -202,7 +203,7 @@ export const AdminDashboardPage = () => {
         </div>
       </section>
 
-      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <section ref={formSectionRef} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="text-2xl font-black text-slate-900">Completed order records</h2>
         <p className="mt-1 text-sm text-slate-500">Customer name, food ordered, and completion date.</p>
         <div className="mt-5 space-y-3">
