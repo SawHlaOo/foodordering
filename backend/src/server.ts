@@ -15,7 +15,11 @@ import { errorHandler, notFound } from './middleware/errorHandler.js';
 const app = express();
 app.set('trust proxy', 1);
 
-app.use(helmetModule.default());
+const helmet = (helmetModule as unknown as {
+  default: (options?: Record<string, unknown>) => express.RequestHandler;
+}).default;
+
+app.use(helmet());
 app.use(cors({
   origin: (requestOrigin, callback) => {
     if (!requestOrigin || env.corsOrigins.includes(requestOrigin)) {
