@@ -14,7 +14,7 @@ export const CartItem = ({ item }: CartItemProps) => {
   const { updateQuantity, removeItem } = useCart();
 
   return (
-    <div className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-3">
+    <div className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white p-3 sm:gap-4">
       <img src={item.imageUrl || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c'} alt={item.name} className="h-20 w-20 rounded-xl object-cover" />
       <div className="flex-1">
         <h3 className="font-semibold text-slate-800">{item.name}</h3>

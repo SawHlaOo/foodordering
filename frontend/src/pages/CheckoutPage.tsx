@@ -63,7 +63,7 @@ export const CheckoutPage = () => {
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-6 lg:grid-cols-[1.3fr_0.7fr]">
-      <div className="space-y-5 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="space-y-5 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <h2 className="text-2xl font-bold">Checkout</h2>
         {errorMessage && <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{errorMessage}</p>}
 
@@ -96,7 +96,7 @@ export const CheckoutPage = () => {
         </button>
       </div>
 
-      <aside className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <aside className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <h3 className="text-xl font-bold">Your order</h3>
         <div className="mt-4 space-y-3">
           {items.map((item) => (

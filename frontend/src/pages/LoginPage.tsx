@@ -21,8 +21,8 @@ export const LoginPage = () => {
   };
 
   return (
-    <div className="mx-auto max-w-md rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-      <h1 className="text-3xl font-black text-slate-900">Login</h1>
+    <div className="mx-auto max-w-md rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
+      <h1 className="text-2xl font-black text-slate-900 sm:text-3xl">Login</h1>
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
         <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Email" className="w-full rounded-xl border border-slate-300 p-3" required />
         <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Password" className="w-full rounded-xl border border-slate-300 p-3" required />

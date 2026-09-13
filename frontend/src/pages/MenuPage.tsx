@@ -41,20 +41,20 @@ export const MenuPage = () => {
   return (
     <div className="space-y-6">
       <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-        <div className="grid gap-4 md:grid-cols-[1.5fr_1fr_1fr]">
+        <div className="grid gap-3 md:grid-cols-[1.5fr_1fr_1fr]">
           <input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search menu items"
-            className="rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 outline-none focus:border-brand-500"
+            className="min-w-0 rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 outline-none focus:border-brand-500"
           />
-          <select value={category} onChange={(event) => setCategory(event.target.value)} className="rounded-xl border border-slate-300 bg-slate-50 px-4 py-3">
+          <select value={category} onChange={(event) => setCategory(event.target.value)} className="min-w-0 rounded-xl border border-slate-300 bg-slate-50 px-4 py-3">
             <option value="all">All categories</option>
             {categories.filter((categoryItem) => categoryItem.name === 'Food' || categoryItem.name === 'Drinks').map((categoryItem) => (
               <option key={categoryItem.id} value={categoryItem.id}>{categoryItem.name}</option>
             ))}
           </select>
-          <select value={sortBy} onChange={(event) => setSortBy(event.target.value)} className="rounded-xl border border-slate-300 bg-slate-50 px-4 py-3">
+          <select value={sortBy} onChange={(event) => setSortBy(event.target.value)} className="min-w-0 rounded-xl border border-slate-300 bg-slate-50 px-4 py-3">
             <option value="featured">Featured</option>
             <option value="price-low">Price: Low to high</option>
             <option value="price-high">Price: High to low</option>
