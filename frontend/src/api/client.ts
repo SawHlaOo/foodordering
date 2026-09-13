@@ -1,4 +1,5 @@
-const API_URL = (import.meta.env.VITE_API_URL || 'https://ordersysbackend.vercel.app/api').replace(/\/$/, '');
+const configuredApiUrl = (import.meta.env.VITE_API_URL || 'https://ordersysbackend.vercel.app/api').replace(/\/+$/, '');
+const API_URL = configuredApiUrl.endsWith('/api') ? configuredApiUrl : `${configuredApiUrl}/api`;
 
 export type ApiResponse<T> = { success: true; data: T } | { success: false; message: string };
 
