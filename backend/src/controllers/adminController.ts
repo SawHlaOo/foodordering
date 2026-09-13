@@ -21,6 +21,29 @@ export const adminController = {
       next(error);
     }
   },
+  listCompletedOrders: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const orders = await prisma.order.findMany({
+        where: { status: 'COMPLETED' },
+        select: {
+          id: true,
+          createdAt: true,
+          updatedAt: true,
+          customer: { select: { name: true } },
+          items: { select: { food: { select: { name: true } } } }
+        },
+        orderBy: { updatedAt: 'desc' }
+      });
+      res.json(sendSuccess(orders.map((order) => ({
+        id: order.id,
+        customerName: order.customer.name,
+        foodNames: order.items.map((item) => item.food.name),
+        completedAt: order.updatedAt
+      }))));
+    } catch (error) {
+      next(error);
+    }
+  },
   listUsers: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const users = await prisma.user.findMany({ orderBy: { createdAt: 'desc' } });

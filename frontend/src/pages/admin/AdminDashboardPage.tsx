@@ -46,6 +46,10 @@ export const AdminDashboardPage = () => {
     queryKey: ['categories'],
     queryFn: () => api.get<Category[]>('/categories')
   });
+  const { data: completedOrders = [] } = useQuery({
+    queryKey: ['adminCompletedOrders'],
+    queryFn: () => api.get<Array<{ id: string; customerName: string; foodNames: string[]; completedAt: string }>>('/admin/completed-orders')
+  });
 
   const saveFood = useMutation({
     mutationFn: async (payload: FoodForm) => {
@@ -194,6 +198,23 @@ export const AdminDashboardPage = () => {
                 </div>
               </div>
             </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+        <h2 className="text-2xl font-black text-slate-900">Completed order records</h2>
+        <p className="mt-1 text-sm text-slate-500">Customer name, food ordered, and completion date.</p>
+        <div className="mt-5 space-y-3">
+          {completedOrders.length === 0 && <p className="text-sm text-slate-500">No completed orders yet.</p>}
+          {completedOrders.map((order) => (
+            <div key={order.id} className="flex flex-col gap-1 rounded-2xl border border-slate-200 p-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="font-semibold text-slate-900">{order.customerName}</p>
+                <p className="text-sm text-slate-600">{order.foodNames.join(', ')}</p>
+              </div>
+              <time dateTime={order.completedAt} className="text-sm text-slate-500">{new Date(order.completedAt).toLocaleString()}</time>
+            </div>
           ))}
         </div>
       </section>
