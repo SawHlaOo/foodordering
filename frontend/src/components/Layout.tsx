@@ -11,7 +11,7 @@ export const Layout = () => {
       <header className="border-b border-slate-200 bg-white/90 backdrop-blur">
         <div className="mx-auto max-w-6xl px-3 py-3 sm:px-4 sm:py-4">
           <div className="flex items-center justify-between gap-2">
-            <Link to="/" className="text-xl font-extrabold text-brand-600 sm:text-2xl">FlavorFlow</Link>
+            <Link to="/" className="text-xl font-extrabold text-brand-600 sm:text-2xl">Your Choice</Link>
             <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
             {user ? (
               <>

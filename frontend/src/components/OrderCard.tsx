@@ -8,7 +8,7 @@ export const OrderCard = ({ order }: { order: Order }) => (
         <p className="text-xs uppercase tracking-wide text-slate-500">Order #{order.orderNumber}</p>
         <h3 className="text-lg font-bold text-slate-800">{order.status}</h3>
       </div>
-      <span className="text-sm font-medium text-brand-600">${Number(order.total).toFixed(2)}</span>
+      <span className="text-sm font-medium text-brand-600">MMK {Number(order.total).toFixed(2)}</span>
     </div>
     <p className="mt-2 text-sm text-slate-600">Type: {order.orderType}</p>
     <p className="text-sm text-slate-600">Placed: {new Date(order.createdAt).toLocaleString()}</p>
