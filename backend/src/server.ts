@@ -59,6 +59,16 @@ app.get('/health', (_req, res) => {
   res.json({ success: true, data: { status: 'ok' } });
 });
 
+app.get('/', (_req, res) => {
+  res.json({
+    success: true,
+    data: {
+      name: 'FlavorFlow API',
+      status: 'ok'
+    }
+  });
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/foods', publicCache, foodRoutes);
 app.use('/api/categories', publicCache, categoryRoutes);
