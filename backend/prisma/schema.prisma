@@ -89,6 +89,7 @@ model Order {
   status          OrderStatus @default(PENDING)
   tableNumber     Int?
   deliveryAddress String?
+  customerPhone   String?
   customerNote    String?
   subtotal        Decimal     @db.Decimal(10, 2)
   deliveryFee     Decimal     @db.Decimal(10, 2)

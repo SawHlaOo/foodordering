@@ -53,7 +53,15 @@ export const AdminDashboardPage = () => {
   });
   const { data: completedOrders = [] } = useQuery({
     queryKey: ['adminCompletedOrders'],
-    queryFn: () => api.get<Array<{ id: string; customerName: string; foodNames: string[]; completedAt: string }>>('/admin/completed-orders')
+    queryFn: () => api.get<Array<{
+      id: string;
+      customerName: string;
+      foodNames: string[];
+      orderType: 'DINE_IN' | 'TAKEAWAY' | 'DELIVERY';
+      deliveryAddress: string | null;
+      customerPhone: string | null;
+      completedAt: string;
+    }>>('/admin/completed-orders')
   });
 
   const saveFood = useMutation({
@@ -227,6 +235,12 @@ export const AdminDashboardPage = () => {
               <div>
                 <p className="font-semibold text-slate-900">{order.customerName}</p>
                 <p className="text-sm text-slate-600">{order.foodNames.join(', ')}</p>
+                {order.orderType === 'DELIVERY' && (
+                  <div className="mt-2 space-y-1 text-sm text-slate-600">
+                    <p><span className="font-semibold text-slate-700">Address:</span> {order.deliveryAddress || 'Not provided'}</p>
+                    <p><span className="font-semibold text-slate-700">Phone:</span> {order.customerPhone || 'Not provided'}</p>
+                  </div>
+                )}
               </div>
               <div className="flex items-center justify-between gap-3 sm:justify-end">
                 <time dateTime={order.completedAt} className="text-sm text-slate-500">{new Date(order.completedAt).toLocaleString()}</time>

@@ -30,6 +30,9 @@ export const adminController = {
           id: true,
           createdAt: true,
           updatedAt: true,
+          orderType: true,
+          deliveryAddress: true,
+          customerPhone: true,
           customer: { select: { name: true } },
           items: { select: { food: { select: { name: true } } } }
         },
@@ -39,6 +42,9 @@ export const adminController = {
         id: order.id,
         customerName: order.customer.name,
         foodNames: order.items.map((item) => item.food.name),
+        orderType: order.orderType,
+        deliveryAddress: order.deliveryAddress,
+        customerPhone: order.customerPhone,
         completedAt: order.updatedAt
       }))));
     } catch (error) {
