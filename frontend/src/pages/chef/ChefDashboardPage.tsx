@@ -141,11 +141,7 @@ export const ChefDashboardPage = () => {
                   <button
                     type="button"
                     disabled={removeOrder.isPending && removeOrder.variables === order.id}
-                    onClick={() => {
-                      if (window.confirm(`Remove order #${order.orderNumber} from Done?`)) {
-                        removeOrder.mutate(order.id);
-                      }
-                    }}
+                    onClick={() => removeOrder.mutate(order.id)}
                     className="rounded-full border border-red-200 px-3 py-2 text-sm font-medium text-red-600 disabled:opacity-60"
                   >
                     Remove
