@@ -251,7 +251,7 @@ export const AdminDashboardPage = () => {
 
       {activeTab === 'form' && <section id="admin-menu-form" ref={formSectionRef} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="text-2xl font-black text-slate-900">{editingId ? 'Edit menu item' : 'Add menu item'}</h2>
-        <p className="mt-1 text-sm text-slate-500">Upload an image directly from your device. PNG, JPG, WEBP, and GIF up to 5 MB are supported.</p>
+        <p className="mt-1 text-sm text-slate-500">Use an image URL or upload PNG, JPG, WEBP, and GIF files up to 5 MB.</p>
         {formError && <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">{formError}</p>}
         {successMessage && <p className="mt-4 rounded-xl bg-emerald-50 p-3 text-sm text-emerald-700">{successMessage}</p>}
         <form onSubmit={submit} className="mt-5 grid gap-4 md:grid-cols-2">
@@ -264,8 +264,18 @@ export const AdminDashboardPage = () => {
           <input required min="0.01" step="0.01" type="number" value={form.price} onChange={(event) => setForm({ ...form, price: event.target.value })} placeholder="Price" className="rounded-xl border border-slate-300 px-3 py-2" />
           <input required min="1" type="number" value={form.preparationTime} onChange={(event) => setForm({ ...form, preparationTime: event.target.value })} placeholder="Preparation time (minutes)" className="rounded-xl border border-slate-300 px-3 py-2" />
           <input required value={form.ingredients} onChange={(event) => setForm({ ...form, ingredients: event.target.value })} placeholder="Ingredients, separated by commas" className="rounded-xl border border-slate-300 px-3 py-2 md:col-span-2" />
+          <label className="md:col-span-2">
+            <span className="mb-2 block text-sm font-semibold text-slate-700">Image URL</span>
+            <input
+              type="url"
+              value={form.imageUrl.startsWith('data:') ? '' : form.imageUrl}
+              onChange={(event) => setForm({ ...form, imageUrl: event.target.value })}
+              placeholder="https://example.com/menu-image.jpg"
+              className="w-full rounded-xl border border-slate-300 px-3 py-2"
+            />
+          </label>
           <label className="rounded-xl border border-dashed border-slate-300 p-4 text-sm text-slate-600 md:col-span-2">
-            <span className="font-semibold">Menu image</span>
+            <span className="font-semibold">Or upload a menu image</span>
             <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" onChange={(event) => handleImage(event.target.files?.[0])} className="mt-2 block w-full text-sm" />
           </label>
           {form.imageUrl && <img src={form.imageUrl} alt="Selected menu preview" className="h-48 w-full rounded-xl object-cover md:col-span-2" />}

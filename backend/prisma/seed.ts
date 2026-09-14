@@ -46,15 +46,15 @@ async function main() {
   });
 
   const categories = [
-    { name: 'Food', slug: 'food', description: 'Freshly prepared food', imageUrl: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd' },
-    { name: 'Drinks', slug: 'drinks', description: 'Cold refreshments', imageUrl: 'https://images.unsplash.com/photo-1544145945-f90425340c7e' },
+    { name: 'Food', slug: 'food', description: 'Freshly prepared food' },
+    { name: 'Drinks', slug: 'drinks', description: 'Cold refreshments' },
   ];
 
   const createdCategories = [] as Array<{ id: string; slug: string }>;
   for (const category of categories) {
     const item = await prisma.category.upsert({
       where: { slug: category.slug },
-      update: {},
+      update: { imageUrl: null },
       create: category
     });
     createdCategories.push(item);
@@ -63,20 +63,20 @@ async function main() {
   const categoryMap = Object.fromEntries(createdCategories.map((item) => [item.slug, item.id]));
 
   const foods = [
-    { name: 'Classic Burger', slug: 'classic-burger', description: 'Beef patty, cheddar, lettuce, tomato, burger sauce.', price: 12.5, categoryId: categoryMap['food'], imageUrl: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd', ingredients: ['Beef', 'Cheddar', 'Lettuce', 'Tomato'], preparationTime: 15 },
-    { name: 'Spicy Chicken Burger', slug: 'spicy-chicken-burger', description: 'Crispy chicken, jalapenos, pickles, and spicy mayo.', price: 14.0, categoryId: categoryMap['food'], imageUrl: 'https://images.unsplash.com/photo-1550547660-d9450f859349', ingredients: ['Chicken', 'Jalapenos', 'Pickles', 'Spicy mayo'], preparationTime: 18 },
-    { name: 'Margherita Pizza', slug: 'margherita-pizza', description: 'Fresh mozzarella, basil, and tomato sauce.', price: 16.0, categoryId: categoryMap['food'], imageUrl: 'https://images.unsplash.com/photo-1513104890138-7c749659a591', ingredients: ['Mozzarella', 'Tomato', 'Basil'], preparationTime: 20 },
-    { name: 'Pepperoni Pizza', slug: 'pepperoni-pizza', description: 'Loaded with pepperoni and stretchy mozzarella.', price: 18.5, categoryId: categoryMap['food'], imageUrl: 'https://images.unsplash.com/photo-1548365328-9f547fb9587c', ingredients: ['Pepperoni', 'Mozzarella', 'Tomato'], preparationTime: 22 },
-    { name: 'Chicken Rice Bowl', slug: 'chicken-rice-bowl', description: 'Grilled chicken with rice, vegetables, and special sauce.', price: 13.5, categoryId: categoryMap['food'], imageUrl: 'https://images.unsplash.com/photo-1512058564366-18510be2db19', ingredients: ['Chicken', 'Rice', 'Vegetables', 'Sauce'], preparationTime: 16 },
-    { name: 'Beef Noodles', slug: 'beef-noodles', description: 'Tender beef noodles with savory broth.', price: 15.5, categoryId: categoryMap['food'], imageUrl: 'https://images.unsplash.com/photo-1557872943-16a5ac26437e', ingredients: ['Beef', 'Noodles', 'Vegetables'], preparationTime: 17 },
-    { name: 'Citrus Soda', slug: 'citrus-soda', description: 'Sparkling citrus refreshment.', price: 4.0, categoryId: categoryMap['drinks'], imageUrl: 'https://images.unsplash.com/photo-1544145945-f90425340c7e', ingredients: ['Lemon', 'Sparkling water'], preparationTime: 5 },
-    { name: 'Chocolate Cake', slug: 'chocolate-cake', description: 'Rich chocolate layered cake.', price: 7.5, categoryId: categoryMap['food'], imageUrl: 'https://images.unsplash.com/photo-1551024601-bec78aea704b', ingredients: ['Chocolate', 'Cream'], preparationTime: 10 }
+    { name: 'Classic Burger', slug: 'classic-burger', description: 'Beef patty, cheddar, lettuce, tomato, burger sauce.', price: 12.5, categoryId: categoryMap['food'], ingredients: ['Beef', 'Cheddar', 'Lettuce', 'Tomato'], preparationTime: 15 },
+    { name: 'Spicy Chicken Burger', slug: 'spicy-chicken-burger', description: 'Crispy chicken, jalapenos, pickles, and spicy mayo.', price: 14.0, categoryId: categoryMap['food'], ingredients: ['Chicken', 'Jalapenos', 'Pickles', 'Spicy mayo'], preparationTime: 18 },
+    { name: 'Margherita Pizza', slug: 'margherita-pizza', description: 'Fresh mozzarella, basil, and tomato sauce.', price: 16.0, categoryId: categoryMap['food'], ingredients: ['Mozzarella', 'Tomato', 'Basil'], preparationTime: 20 },
+    { name: 'Pepperoni Pizza', slug: 'pepperoni-pizza', description: 'Loaded with pepperoni and stretchy mozzarella.', price: 18.5, categoryId: categoryMap['food'], ingredients: ['Pepperoni', 'Mozzarella', 'Tomato'], preparationTime: 22 },
+    { name: 'Chicken Rice Bowl', slug: 'chicken-rice-bowl', description: 'Grilled chicken with rice, vegetables, and special sauce.', price: 13.5, categoryId: categoryMap['food'], ingredients: ['Chicken', 'Rice', 'Vegetables', 'Sauce'], preparationTime: 16 },
+    { name: 'Beef Noodles', slug: 'beef-noodles', description: 'Tender beef noodles with savory broth.', price: 15.5, categoryId: categoryMap['food'], ingredients: ['Beef', 'Noodles', 'Vegetables'], preparationTime: 17 },
+    { name: 'Citrus Soda', slug: 'citrus-soda', description: 'Sparkling citrus refreshment.', price: 4.0, categoryId: categoryMap['drinks'], ingredients: ['Lemon', 'Sparkling water'], preparationTime: 5 },
+    { name: 'Chocolate Cake', slug: 'chocolate-cake', description: 'Rich chocolate layered cake.', price: 7.5, categoryId: categoryMap['food'], ingredients: ['Chocolate', 'Cream'], preparationTime: 10 }
   ];
 
   for (const food of foods) {
     await prisma.food.upsert({
       where: { slug: food.slug },
-      update: { categoryId: food.categoryId },
+      update: { categoryId: food.categoryId, imageUrl: null },
       create: { ...food, isAvailable: true }
     });
   }
