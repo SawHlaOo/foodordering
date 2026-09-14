@@ -15,7 +15,7 @@ export const orderRepo = {
     orderBy: { createdAt: 'desc' }
   }),
   listForChef: () => prisma.order.findMany({
-    where: { status: { in: ['PENDING', 'CONFIRMED', 'PREPARING', 'READY'] } },
+    where: { status: { in: ['PENDING', 'CONFIRMED', 'PREPARING', 'READY', 'COMPLETED'] } },
     include: { customer: true, items: { include: { food: true } } },
     orderBy: { createdAt: 'asc' }
   }),

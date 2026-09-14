@@ -41,8 +41,8 @@ export const Layout = () => {
                 <NavLink to="/" className={({ isActive }) => `font-medium ${isActive ? 'text-brand-600' : 'text-slate-600'}`}>Home</NavLink>
                 <NavLink to="/menu" className={({ isActive }) => `font-medium ${isActive ? 'text-brand-600' : 'text-slate-600'}`}>Menu</NavLink>
                 <NavLink to="/orders" className={({ isActive }) => `font-medium ${isActive ? 'text-brand-600' : 'text-slate-600'}`}>Orders</NavLink>
-                <NavLink to="/cart" className={({ isActive }) => `font-medium ${isActive ? 'text-brand-600' : 'text-slate-600'}`}>Cart ({totalItems})</NavLink>
                 {user?.role === 'CHEF' && <NavLink to="/chef/dashboard" className="font-medium text-slate-600">Kitchen</NavLink>}
+                {user?.role !== 'CHEF' && <NavLink to="/cart" className={({ isActive }) => `font-medium ${isActive ? 'text-brand-600' : 'text-slate-600'}`}>Cart ({totalItems})</NavLink>}
               </>
             )}
           </nav>
