@@ -47,6 +47,7 @@ export const orderService = {
       status: 'PENDING',
       tableNumber: payload.orderType === 'DINE_IN' ? payload.tableNumber : null,
       deliveryAddress: payload.orderType === 'DELIVERY' ? payload.deliveryAddress : null,
+      customerPhone: payload.orderType === 'DELIVERY' ? payload.customerPhone ?? null : null,
       customerNote: payload.customerNote ?? null,
       subtotal: String(subtotal),
       deliveryFee: String(deliveryFee),
