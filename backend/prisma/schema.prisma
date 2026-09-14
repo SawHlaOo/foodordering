@@ -90,6 +90,7 @@ model Order {
   tableNumber     Int?
   deliveryAddress String?
   customerPhone   String?
+  customerName    String?
   customerNote    String?
   subtotal        Decimal     @db.Decimal(10, 2)
   deliveryFee     Decimal     @db.Decimal(10, 2)

@@ -10,7 +10,7 @@ export const createOrderSchema = z.object({
   tableNumber: z.number().int().positive('Table number must be greater than zero.').optional(),
   deliveryAddress: z.string().min(5, 'Delivery address must contain at least 5 characters.').optional(),
   customerNote: z.string().optional(),
-  customerName: z.string().min(2, 'Full name must contain at least 2 characters.'),
+  customerName: z.string().min(2, 'Full name must contain at least 2 characters.').optional(),
   customerPhone: z.string().min(7, 'Phone number must contain at least 7 characters.').optional()
 }).superRefine((order, context) => {
   if (order.orderType === 'DINE_IN' && order.tableNumber === undefined) {

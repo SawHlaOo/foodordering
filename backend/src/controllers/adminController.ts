@@ -33,6 +33,7 @@ export const adminController = {
           orderType: true,
           deliveryAddress: true,
           customerPhone: true,
+          customerName: true,
           customer: { select: { name: true } },
           items: { select: { food: { select: { name: true } } } }
         },
@@ -40,7 +41,7 @@ export const adminController = {
       });
       res.json(sendSuccess(orders.map((order) => ({
         id: order.id,
-        customerName: order.customer.name,
+        customerName: order.customerName ?? order.customer.name,
         foodNames: order.items.map((item) => item.food.name),
         orderType: order.orderType,
         deliveryAddress: order.deliveryAddress,
