@@ -2,6 +2,7 @@ import { prisma } from '../lib/prisma.js';
 import { ApiError } from '../middleware/errorHandler.js';
 import { foodRepo } from '../repositories/foodRepo.js';
 import { orderRepo } from '../repositories/orderRepo.js';
+import { userRepo } from '../repositories/userRepo.js';
 
 const orderFlow: Record<string, string[]> = {
   PENDING: ['CONFIRMED', 'CANCELLED', 'REJECTED'],
@@ -21,6 +22,8 @@ export const orderService = {
     }
 
     const requestedItems = payload.items as Array<{ foodId: string; quantity: number; note?: string | null }>;
+    const customerName = payload.customerName?.trim() || (await userRepo.findNameById(customerId))?.name;
+    if (!customerName) throw new ApiError('Customer name could not be determined.', 400);
     const foodIds = requestedItems.map((item) => item.foodId);
     const foods = await foodRepo.getByIds(foodIds);
     const foodMap = new Map<string, (typeof foods)[number]>(foods.map((food) => [food.id, food]));
@@ -48,6 +51,7 @@ export const orderService = {
       tableNumber: payload.orderType === 'DINE_IN' ? payload.tableNumber : null,
       deliveryAddress: payload.orderType === 'DELIVERY' ? payload.deliveryAddress : null,
       customerPhone: payload.orderType === 'DELIVERY' ? payload.customerPhone ?? null : null,
+      customerName,
       customerNote: payload.customerNote ?? null,
       subtotal: String(subtotal),
       deliveryFee: String(deliveryFee),

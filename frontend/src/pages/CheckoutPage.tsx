@@ -22,7 +22,7 @@ export const CheckoutPage = () => {
       setErrorMessage('Your cart is empty.');
       return;
     }
-    if (customerName.trim().length < 2) {
+    if (customerName.trim() && customerName.trim().length < 2) {
       setErrorMessage('Full name must contain at least 2 characters.');
       return;
     }
@@ -43,7 +43,7 @@ export const CheckoutPage = () => {
     try {
       const payload = {
         orderType,
-        customerName,
+        customerName: customerName.trim() || undefined,
         customerPhone: customerPhone.trim() || undefined,
         tableNumber: orderType === 'DINE_IN' ? Number(tableNumber) : undefined,
         deliveryAddress: orderType === 'DELIVERY' ? deliveryAddress : undefined,
@@ -68,7 +68,7 @@ export const CheckoutPage = () => {
         {errorMessage && <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{errorMessage}</p>}
 
         <div className="grid gap-4 md:grid-cols-2">
-          <input value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder="Full name" className="rounded-xl border border-slate-300 p-3" required />
+          <input value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder="Full name (optional)" className="rounded-xl border border-slate-300 p-3" />
           {orderType === 'DELIVERY' && (
             <input value={customerPhone} onChange={(e) => setCustomerPhone(e.target.value)} placeholder="Phone number" className="rounded-xl border border-slate-300 p-3" required />
           )}
