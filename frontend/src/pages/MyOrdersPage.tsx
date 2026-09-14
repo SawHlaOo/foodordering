@@ -7,7 +7,9 @@ export const MyOrdersPage = () => {
   const queryClient = useQueryClient();
   const { data: orders = [], isLoading } = useQuery({
     queryKey: ['customerOrders'],
-    queryFn: () => api.get<Order[]>('/orders')
+    queryFn: () => api.get<Order[]>('/orders'),
+    refetchInterval: 2_000,
+    refetchIntervalInBackground: true
   });
   const removeOrder = useMutation({
     mutationFn: (orderId: string) => api.delete(`/orders/${orderId}`),

@@ -116,6 +116,17 @@ export const orderService = {
 
     return orderRepo.update(orderId, updatePayload);
   },
+  deleteChefCompletedOrder: async (chefId: string, orderId: string) => {
+    const order = await orderRepo.findById(orderId);
+    if (!order) throw new ApiError('Order not found.', 404);
+    if (order.chefId !== chefId) {
+      throw new ApiError('This order is assigned to a different chef.', 403);
+    }
+    if (order.status !== 'COMPLETED') {
+      throw new ApiError('Only completed orders can be removed.', 400);
+    }
+    return orderRepo.delete(orderId);
+  },
   getDashboardStats: async () => {
     const today = new Date();
     const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
