@@ -13,7 +13,24 @@ export const ChefDashboardPage = () => {
   const updateStatus = useMutation({
     mutationFn: ({ orderId, status }: { orderId: string; status: string }) =>
       api.patch(`/chef/orders/${orderId}/status`, { status }),
-    onSuccess: () => {
+    onMutate: async ({ orderId, status }) => {
+      await queryClient.cancelQueries({ queryKey: ['chefOrders'] });
+      const previousOrders = queryClient.getQueryData<any[]>(['chefOrders']);
+
+      if (status === 'COMPLETED') {
+        queryClient.setQueryData<any[]>(['chefOrders'], (currentOrders = []) =>
+          currentOrders.filter((order) => order.id !== orderId)
+        );
+      }
+
+      return { previousOrders };
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.previousOrders) {
+        queryClient.setQueryData(['chefOrders'], context.previousOrders);
+      }
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['chefOrders'] });
     }
   });
