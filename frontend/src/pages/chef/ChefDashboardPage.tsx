@@ -64,6 +64,9 @@ export const ChefDashboardPage = () => {
             </div>
             <p className="mt-4 font-semibold text-slate-800">Customer: {order.customer?.name}</p>
             <p className="text-sm text-slate-600">Type: {order.orderType}</p>
+            {order.orderType === 'DINE_IN' && (
+              <p className="text-sm font-semibold text-slate-700">Table: {order.tableNumber ?? 'Not provided'}</p>
+            )}
             <div className="mt-3 space-y-2 text-sm text-slate-600">
               {order.items?.map((item: any) => (
                 <div key={item.id} className="flex justify-between">
