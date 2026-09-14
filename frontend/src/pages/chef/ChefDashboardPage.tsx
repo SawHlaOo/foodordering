@@ -36,6 +36,25 @@ export const ChefDashboardPage = () => {
       queryClient.invalidateQueries({ queryKey: ['chefOrders'] });
     }
   });
+  const removeOrder = useMutation({
+    mutationFn: (orderId: string) => api.delete(`/chef/orders/${orderId}`),
+    onMutate: async (orderId) => {
+      await queryClient.cancelQueries({ queryKey: ['chefOrders'] });
+      const previousOrders = queryClient.getQueryData<any[]>(['chefOrders']);
+      queryClient.setQueryData<any[]>(['chefOrders'], (currentOrders = []) =>
+        currentOrders.filter((order) => order.id !== orderId)
+      );
+      return { previousOrders };
+    },
+    onError: (_error, _orderId, context) => {
+      if (context?.previousOrders) {
+        queryClient.setQueryData(['chefOrders'], context.previousOrders);
+      }
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['chefOrders'] });
+    }
+  });
 
   const newOrders = orders.filter((order) => order.status === 'PENDING');
   const activeOrders = orders.filter((order) => ['CONFIRMED', 'PREPARING', 'READY'].includes(order.status));
@@ -116,9 +135,26 @@ export const ChefDashboardPage = () => {
             <div className="mt-5 flex flex-wrap gap-2">
               {order.status === 'PENDING' && <button type="button" disabled={updateStatus.isPending && updateStatus.variables?.orderId === order.id} onClick={() => updateStatus.mutate({ orderId: order.id, status: 'CONFIRMED' })} className="rounded-full bg-brand-600 px-3 py-2 text-sm font-medium text-white disabled:opacity-60">Accept order</button>}
               {(order.status === 'CONFIRMED' || order.status === 'PREPARING' || order.status === 'READY') && <button type="button" disabled={updateStatus.isPending && updateStatus.variables?.orderId === order.id} onClick={() => updateStatus.mutate({ orderId: order.id, status: 'COMPLETED' })} className="rounded-full bg-brand-600 px-3 py-2 text-sm font-medium text-white disabled:opacity-60">Complete</button>}
-              {order.status === 'COMPLETED' && <span className="text-sm font-semibold text-emerald-700">Order completed</span>}
+              {order.status === 'COMPLETED' && (
+                <>
+                  <span className="text-sm font-semibold text-emerald-700">Order completed</span>
+                  <button
+                    type="button"
+                    disabled={removeOrder.isPending && removeOrder.variables === order.id}
+                    onClick={() => {
+                      if (window.confirm(`Remove order #${order.orderNumber} from Done?`)) {
+                        removeOrder.mutate(order.id);
+                      }
+                    }}
+                    className="rounded-full border border-red-200 px-3 py-2 text-sm font-medium text-red-600 disabled:opacity-60"
+                  >
+                    Remove
+                  </button>
+                </>
+              )}
             </div>
             {updateStatus.isError && <p role="alert" className="mt-3 text-sm text-red-600">{updateStatus.error instanceof Error ? updateStatus.error.message : 'Unable to update order status'}</p>}
+            {removeOrder.isError && <p role="alert" className="mt-3 text-sm text-red-600">{removeOrder.error instanceof Error ? removeOrder.error.message : 'Unable to remove order'}</p>}
           </div>
         ))}
       </div>

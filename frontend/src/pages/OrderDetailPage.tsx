@@ -12,8 +12,8 @@ export const OrderDetailPage = () => {
     queryKey: ['order', id],
     queryFn: () => api.get<Order>(`/orders/${id}`),
     enabled: !!id,
-    refetchInterval: 15_000,
-    refetchIntervalInBackground: false
+    refetchInterval: 2_000,
+    refetchIntervalInBackground: true
   });
 
   if (!order) return <div className="rounded-2xl bg-white p-6 text-center text-slate-600">Loading order details...</div>;

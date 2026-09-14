@@ -19,5 +19,14 @@ export const chefController = {
     } catch (error) {
       next(error);
     }
+  },
+  deleteCompleted: async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const id = String(req.params.id);
+      await orderService.deleteChefCompletedOrder(req.user!.userId, id);
+      res.json(sendSuccess({ id }));
+    } catch (error) {
+      next(error);
+    }
   }
 };

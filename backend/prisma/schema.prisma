@@ -103,6 +103,8 @@ model Order {
   items    OrderItem[]
 
   @@index([status])
+  @@index([status, createdAt])
+  @@index([status, updatedAt])
   @@index([customerId])
   @@index([chefId])
   @@index([createdAt])
@@ -118,4 +120,7 @@ model OrderItem {
 
   order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
   food  Food  @relation(fields: [foodId], references: [id], onDelete: Restrict)
+
+  @@index([orderId])
+  @@index([foodId])
 }
