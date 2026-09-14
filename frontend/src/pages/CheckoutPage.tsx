@@ -6,7 +6,7 @@ import { useCart } from '../contexts/CartContext';
 export const CheckoutPage = () => {
   const navigate = useNavigate();
   const { items, subtotal, clearCart } = useCart();
-  const [orderType, setOrderType] = useState<'DINE_IN' | 'TAKEAWAY' | 'DELIVERY'>('DELIVERY');
+  const [orderType, setOrderType] = useState<'DINE_IN' | 'TAKEAWAY' | 'DELIVERY'>('DINE_IN');
   const [tableNumber, setTableNumber] = useState('');
   const [deliveryAddress, setDeliveryAddress] = useState('');
   const [customerName, setCustomerName] = useState('');
