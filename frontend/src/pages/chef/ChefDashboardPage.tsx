@@ -63,11 +63,11 @@ export const ChefDashboardPage = () => {
     ? completedOrders
     : orders.filter((order) => order.status !== 'COMPLETED');
   const statusStyles: Record<string, string> = {
-    PENDING: 'bg-amber-100 text-amber-800',
-    CONFIRMED: 'bg-blue-100 text-blue-800',
-    PREPARING: 'bg-purple-100 text-purple-800',
-    READY: 'bg-cyan-100 text-cyan-800',
-    COMPLETED: 'bg-emerald-100 text-emerald-800'
+    PENDING: 'bg-amber-50 text-amber-600',
+    CONFIRMED: 'bg-blue-50 text-blue-600',
+    PREPARING: 'bg-[#F7E7D8] text-[#9A5A2E]',
+    READY: 'bg-blue-50 text-blue-600',
+    COMPLETED: 'bg-emerald-50 text-emerald-600'
   };
   const statusLabels: Record<string, string> = {
     PENDING: 'New',

@@ -3,27 +3,80 @@
 @tailwind utilities;
 
 :root {
-  font-family: 'Inter', system-ui, sans-serif;
-  color: #0f172a;
-  background: #f8fafc;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  color: #292421;
+  background: #F8F1E7;
+  --bg: #F8F1E7;
+  --surface: #FFFFFF;
+  --surface-muted: #F2EAE0;
+  --surface-strong: #F5E6E1;
+  --border: #E8E1D8;
+  --border-strong: #D8CEC3;
+  --text-primary: #292421;
+  --text-secondary: #756D67;
+  --text-muted: #9A918A;
+  --text-disabled: #B8B0A9;
+  --brand: #7A1F32;
+  --brand-hover: #681A2B;
+  --brand-active: #541525;
+  --brand-light: #F5E6E1;
+  --sage: #66755A;
+  --sage-soft: #E4E9DF;
+  --gold: #C89B5B;
+  --success: #3F7D4A;
+  --success-soft: #E7F1E8;
+  --warning: #B7791F;
+  --warning-soft: #FFF3D6;
+  --info: #426B8C;
+  --info-soft: #E4EDF4;
+  --error: #A33A3A;
+  --error-soft: #F8E4E4;
 }
+
 html, body, #root {
   min-height: 100%;
   height: 100%;
+  background: var(--bg);
 }
+
 body {
   margin: 0;
   overflow-x: hidden;
+  color: var(--text-primary);
+  background: linear-gradient(180deg, #F8F1E7 0%, #F7F0E8 100%);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
+
 button, input, select, textarea {
   font: inherit;
 }
+
 button, a, input, select, textarea {
   -webkit-tap-highlight-color: transparent;
 }
+
 button, a {
   touch-action: manipulation;
 }
+
 input, select, textarea {
   min-height: 44px;
+  color: var(--text-primary);
+  background-color: var(--surface);
 }
+
+::selection {
+  background: rgba(122, 31, 50, 0.16);
+}
+
+img {
+  display: block;
+}
+
+@layer components {
+  .soft-panel {
+    @apply border border-slate-200 bg-white shadow-sm;
+  }
+}
+
