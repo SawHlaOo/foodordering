@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 import { api } from '../../api/client';
 
 export const ChefDashboardPage = () => {
@@ -133,6 +134,12 @@ export const ChefDashboardPage = () => {
               ))}
             </div>
             <div className="mt-5 flex flex-wrap items-center gap-2">
+              <Link
+                to={`/orders/${order.id}`}
+                className="inline-flex h-10 items-center justify-center rounded-xl border border-brand-200 bg-brand-50 px-4 text-sm font-semibold text-brand-700 transition hover:border-brand-300 hover:bg-brand-100 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
+              >
+                View details
+              </Link>
               {order.status === 'PENDING' && <button type="button" disabled={updateStatus.isPending && updateStatus.variables?.orderId === order.id} onClick={() => updateStatus.mutate({ orderId: order.id, status: 'CONFIRMED' })} className="inline-flex h-10 items-center justify-center rounded-xl bg-brand-500 px-4 text-sm font-semibold text-white transition hover:bg-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500/30 disabled:cursor-not-allowed disabled:opacity-60">Accept order</button>}
               {(order.status === 'CONFIRMED' || order.status === 'PREPARING' || order.status === 'READY') && <button type="button" disabled={updateStatus.isPending && updateStatus.variables?.orderId === order.id} onClick={() => updateStatus.mutate({ orderId: order.id, status: 'COMPLETED' })} className="inline-flex h-10 items-center justify-center rounded-xl bg-brand-500 px-4 text-sm font-semibold text-white transition hover:bg-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-500/30 disabled:cursor-not-allowed disabled:opacity-60">Complete</button>}
               {order.status === 'COMPLETED' && (
