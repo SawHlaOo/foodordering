@@ -69,10 +69,12 @@ export const orderService = {
     return orderRepo.findById(order.id);
   },
   getCustomerOrders: async (customerId: string) => orderRepo.listForCustomer(customerId),
-  getOrderById: async (customerId: string, orderId: string) => {
+  getOrderById: async (userId: string, role: 'CUSTOMER' | 'CHEF' | 'ADMIN', orderId: string) => {
     const order = await orderRepo.findById(orderId);
     if (!order) throw new ApiError('Order not found.', 404);
-    if (order.customerId !== customerId) throw new ApiError('You can only access your own orders.', 403);
+    if (role === 'CUSTOMER' && order.customerId !== userId) {
+      throw new ApiError('You can only access your own orders.', 403);
+    }
     return order;
   },
   cancelOrder: async (customerId: string, orderId: string) => {
