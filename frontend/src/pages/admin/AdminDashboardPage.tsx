@@ -242,27 +242,32 @@ export const AdminDashboardPage = () => {
                   </div>
                 )}
               </div>
-              <div className="flex items-center justify-between gap-3 sm:justify-end">
+              <div className="flex flex-wrap items-center justify-between gap-3 sm:justify-end">
                 <time dateTime={order.completedAt} className="text-sm text-slate-500">{new Date(order.completedAt).toLocaleString()}</time>
-                <Link
-                  to={`/orders/${order.id}`}
-                  className="rounded-full border border-brand-200 px-3 py-1.5 text-sm font-medium text-brand-600 hover:bg-brand-50"
-                >
-                  View detail
-                </Link>
-                <button
-                  type="button"
-                  disabled={deleteCompletedOrder.isPending}
-                  onClick={() => {
-                    if (window.confirm(`Remove the completed order for ${order.customerName}?`)) {
-                      setFormError('');
-                      deleteCompletedOrder.mutate(order.id);
-                    }
-                  }}
-                  className="rounded-full border border-red-200 px-3 py-1.5 text-sm font-medium text-red-600 disabled:opacity-60"
-                >
-                  Remove
-                </button>
+                <div className="flex w-full items-center gap-2 sm:w-auto">
+                  <Link
+                    to={`/orders/${order.id}`}
+                    className="inline-flex h-10 flex-1 items-center justify-center rounded-xl border border-brand-200 bg-brand-50 px-4 text-sm font-semibold text-brand-700 transition hover:border-brand-300 hover:bg-brand-100 focus:outline-none focus:ring-2 focus:ring-brand-500/30 sm:flex-none"
+                  >
+                    View detail
+                  </Link>
+                  <span className="inline-flex h-10 items-center rounded-xl bg-emerald-50 px-3 text-sm font-semibold text-emerald-600">
+                    Order completed
+                  </span>
+                  <button
+                    type="button"
+                    disabled={deleteCompletedOrder.isPending}
+                    onClick={() => {
+                      if (window.confirm(`Remove the completed order for ${order.customerName}?`)) {
+                        setFormError('');
+                        deleteCompletedOrder.mutate(order.id);
+                      }
+                    }}
+                    className="inline-flex h-10 flex-1 items-center justify-center rounded-xl border border-red-200 bg-white px-4 text-sm font-semibold text-red-600 transition hover:border-red-300 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500/20 disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none"
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
             </div>
           ))}
