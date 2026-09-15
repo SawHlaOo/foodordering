@@ -2,10 +2,12 @@ import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'react-router-dom';
 import { api } from '../api/client';
 import { OrderStatusTracker } from '../components/OrderStatusTracker';
+import { useAuth } from '../contexts/AuthContext';
 import type { Order } from '../types';
 
 export const OrderDetailPage = () => {
   const { id } = useParams();
+  const { user } = useAuth();
   const displayStatus = (status: string) => status === 'PREPARING' || status === 'READY' ? 'CONFIRMED' : status;
 
   const { data: order } = useQuery({
@@ -28,7 +30,7 @@ export const OrderDetailPage = () => {
           </div>
           <span className="text-xl font-bold text-brand-600">MMK {Number(order.total).toFixed(2)}</span>
         </div>
-        <OrderStatusTracker currentStatus={order.status} />
+        {user?.role !== 'CHEF' && <OrderStatusTracker currentStatus={order.status} />}
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
