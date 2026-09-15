@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../api/client';
 import type { Category, Food } from '../../types';
@@ -244,6 +244,12 @@ export const AdminDashboardPage = () => {
               </div>
               <div className="flex items-center justify-between gap-3 sm:justify-end">
                 <time dateTime={order.completedAt} className="text-sm text-slate-500">{new Date(order.completedAt).toLocaleString()}</time>
+                <Link
+                  to={`/orders/${order.id}`}
+                  className="rounded-full border border-brand-200 px-3 py-1.5 text-sm font-medium text-brand-600 hover:bg-brand-50"
+                >
+                  View detail
+                </Link>
                 <button
                   type="button"
                   disabled={deleteCompletedOrder.isPending}

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 import { api } from '../../api/client';
 
 export const ChefDashboardPage = () => {
@@ -133,6 +134,12 @@ export const ChefDashboardPage = () => {
               ))}
             </div>
             <div className="mt-5 flex flex-wrap gap-2">
+              <Link
+                to={`/orders/${order.id}`}
+                className="rounded-full border border-brand-200 px-3 py-2 text-sm font-medium text-brand-600 hover:bg-brand-50"
+              >
+                View detail
+              </Link>
               {order.status === 'PENDING' && <button type="button" disabled={updateStatus.isPending && updateStatus.variables?.orderId === order.id} onClick={() => updateStatus.mutate({ orderId: order.id, status: 'CONFIRMED' })} className="rounded-full bg-brand-600 px-3 py-2 text-sm font-medium text-white disabled:opacity-60">Accept order</button>}
               {(order.status === 'CONFIRMED' || order.status === 'PREPARING' || order.status === 'READY') && <button type="button" disabled={updateStatus.isPending && updateStatus.variables?.orderId === order.id} onClick={() => updateStatus.mutate({ orderId: order.id, status: 'COMPLETED' })} className="rounded-full bg-brand-600 px-3 py-2 text-sm font-medium text-white disabled:opacity-60">Complete</button>}
               {order.status === 'COMPLETED' && (

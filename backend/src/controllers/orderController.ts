@@ -22,7 +22,7 @@ export const orderController = {
   detail: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = String(req.params.id);
-      const order = await orderService.getOrderById(req.user!.userId, id);
+      const order = await orderService.getOrderById(req.user!.userId, req.user!.role, id);
       res.json(sendSuccess(order));
     } catch (error) {
       next(error);
