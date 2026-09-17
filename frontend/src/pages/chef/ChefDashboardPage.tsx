@@ -66,7 +66,7 @@ export const ChefDashboardPage = () => {
   const statusStyles: Record<string, string> = {
     PENDING: 'bg-amber-50 text-amber-600',
     CONFIRMED: 'bg-blue-50 text-blue-600',
-    PREPARING: 'bg-[#F7E7D8] text-[#9A5A2E]',
+    PREPARING: 'bg-sage-100 text-brand-700',
     READY: 'bg-blue-50 text-blue-600',
     COMPLETED: 'bg-emerald-50 text-emerald-600'
   };
