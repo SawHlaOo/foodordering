@@ -30,13 +30,62 @@ export const HomePage = () => {
 
       <ScrollReveal className="space-y-4">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="text-2xl font-bold">Recommended picks</h2>
+          <h2 className="text-2xl font-bold">All products</h2>
           <Link to="/menu" className="shrink-0 text-sm font-semibold text-brand-600 transition hover:text-brand-700 focus:outline-none focus-visible:underline">
             See all
           </Link>
         </div>
-        <HorizontalProductCarousel foods={foods.slice(0, 8)} />
+        <HorizontalProductCarousel foods={foods} ariaLabel="All products" />
       </ScrollReveal>
+
+      {['Drinks', 'Food'].map((categoryName) => {
+        const categoryFoods = foods.filter((food) => food.category?.name?.toLowerCase() === categoryName.toLowerCase());
+        if (categoryFoods.length === 0) return null;
+
+        return (
+          <ScrollReveal key={categoryName} className="space-y-4">
+            <div className="flex items-center justify-between gap-3">
+              <h2 className="text-2xl font-bold">{categoryName === 'Food' ? 'Foods' : categoryName}</h2>
+              <Link to="/menu" className="shrink-0 text-sm font-semibold text-brand-600 transition hover:text-brand-700 focus:outline-none focus-visible:underline">
+                See all
+              </Link>
+            </div>
+            <HorizontalProductCarousel
+              foods={categoryFoods}
+              ariaLabel={`${categoryName} products`}
+              cardType="normal"
+            />
+          </ScrollReveal>
+        );
+      })}
+
+      <ScrollReveal>
+        <section className="rounded-3xl border border-sage-100 bg-sage-50 px-5 py-8 text-center sm:px-8">
+          <h2 className="text-2xl font-bold">Why choose us?</h2>
+          <div className="mt-6 grid gap-4 sm:grid-cols-3">
+            <div className="rounded-2xl bg-white/80 p-4">
+              <span className="text-2xl" aria-hidden="true">🌱</span>
+              <h3 className="mt-2 font-bold">Fresh</h3>
+              <p className="mt-1 text-sm text-slate-500">Quality ingredients prepared with care.</p>
+            </div>
+            <div className="rounded-2xl bg-white/80 p-4">
+              <span className="text-2xl" aria-hidden="true">💪</span>
+              <h3 className="mt-2 font-bold">Protein</h3>
+              <p className="mt-1 text-sm text-slate-500">Nourishing choices for your day.</p>
+            </div>
+            <div className="rounded-2xl bg-white/80 p-4">
+              <span className="text-2xl" aria-hidden="true">⚡</span>
+              <h3 className="mt-2 font-bold">Energy</h3>
+              <p className="mt-1 text-sm text-slate-500">Delicious fuel served quickly.</p>
+            </div>
+          </div>
+        </section>
+      </ScrollReveal>
+
+      <footer className="border-t border-slate-200 pt-6 text-center text-sm text-slate-500">
+        <p className="font-semibold text-slate-700">Your Choice</p>
+        <p className="mt-1">Fresh food and drinks made for your day.</p>
+      </footer>
     </div>
   );
 };
