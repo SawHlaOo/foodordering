@@ -35,7 +35,7 @@ export const HomePage = () => {
             See all
           </Link>
         </div>
-        <HorizontalProductCarousel foods={foods.slice(0, 8)} ariaLabel="Recommended products" />
+        <HorizontalProductCarousel foods={foods.slice(0, 8)} />
       </ScrollReveal>
     </div>
   );
