@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { api } from '../api/client';
-import { FoodCard } from '../components/FoodCard';
+import { HorizontalProductCarousel } from '../components/HorizontalProductCarousel';
 import { ScrollReveal } from '../components/ScrollReveal';
 import type { Food } from '../types';
 
@@ -29,14 +29,13 @@ export const HomePage = () => {
       </section>
 
       <ScrollReveal className="space-y-4">
-        <h2 className="text-2xl font-bold">Recommended picks</h2>
-        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-2 xl:grid-cols-4">
-          {foods.slice(0, 4).map((food, index) => (
-            <ScrollReveal key={food.id} delay={index * 70}>
-              <FoodCard food={food} />
-            </ScrollReveal>
-          ))}
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="text-2xl font-bold">Recommended picks</h2>
+          <Link to="/menu" className="shrink-0 text-sm font-semibold text-brand-600 transition hover:text-brand-700 focus:outline-none focus-visible:underline">
+            See all
+          </Link>
         </div>
+        <HorizontalProductCarousel foods={foods.slice(0, 8)} />
       </ScrollReveal>
     </div>
   );
