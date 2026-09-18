@@ -6,9 +6,9 @@ export const FoodCard = ({ food }: { food: Food }) => {
   const { addItem } = useCart();
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md">
-      <Link to={`/foods/${food.id}`}>
-        <img src={food.imageUrl || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c'} alt={food.name} className="h-40 w-full object-cover sm:h-48" />
+    <div className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-md">
+      <Link to={`/foods/${food.id}`} className="block overflow-hidden">
+        <img src={food.imageUrl || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c'} alt={food.name} className="h-40 w-full object-cover transition duration-500 ease-out group-hover:scale-[1.04] sm:h-48" />
       </Link>
       <div className="p-3.5 sm:p-4">
         <div className="mb-2 flex items-center justify-between">
@@ -27,7 +27,7 @@ export const FoodCard = ({ food }: { food: Food }) => {
             onClick={() => addItem(food)}
             aria-label={`Add ${food.name} to cart`}
             title="Add to cart"
-            className="rounded-full bg-brand-600 p-2.5 text-white disabled:cursor-not-allowed disabled:bg-slate-300"
+            className="rounded-full bg-brand-600 p-2.5 text-white transition duration-200 hover:scale-105 hover:bg-brand-700 active:scale-95 disabled:cursor-not-allowed disabled:bg-slate-300"
           >
             <svg aria-hidden="true" className="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="9" cy="20" r="1" />
