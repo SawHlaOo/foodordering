@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Link } from 'react-router-dom';
 import { api } from '../api/client';
 import { HorizontalProductCarousel } from '../components/HorizontalProductCarousel';
+import { HomeFooter } from '../components/HomeFooter';
 import { ScrollReveal } from '../components/ScrollReveal';
 import type { Food } from '../types';
 
@@ -82,10 +83,7 @@ export const HomePage = () => {
         </section>
       </ScrollReveal>
 
-      <footer className="border-t border-slate-200 pt-6 text-center text-sm text-slate-500">
-        <p className="font-semibold text-slate-700">Your Choice</p>
-        <p className="mt-1">Fresh food and drinks made for your day.</p>
-      </footer>
+      <HomeFooter />
     </div>
   );
 };
