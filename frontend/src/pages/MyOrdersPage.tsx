@@ -8,7 +8,7 @@ export const MyOrdersPage = () => {
   const { data: orders = [], isLoading } = useQuery({
     queryKey: ['customerOrders'],
     queryFn: () => api.get<Order[]>('/orders'),
-    refetchInterval: 2_000,
+    refetchInterval: 5_000,
     refetchIntervalInBackground: true
   });
   const removeOrder = useMutation({
