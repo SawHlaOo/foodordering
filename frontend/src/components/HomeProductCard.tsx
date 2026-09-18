@@ -1,9 +1,16 @@
 import { Link } from 'react-router-dom';
 import type { Food } from '../types';
 
-export const HomeProductCard = ({ food }: { food: Food }) => (
+type HomeProductCardProps = {
+  food: Food;
+  ariaHidden?: boolean;
+};
+
+export const HomeProductCard = ({ food, ariaHidden = false }: HomeProductCardProps) => (
   <Link
     to={`/foods/${food.id}`}
+    aria-hidden={ariaHidden}
+    tabIndex={ariaHidden ? -1 : undefined}
     className="group block w-28 shrink-0 snap-start overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 sm:w-32"
   >
     <span className="block overflow-hidden bg-sage-50">
