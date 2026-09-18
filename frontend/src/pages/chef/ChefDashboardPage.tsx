@@ -38,7 +38,7 @@ export const ChefDashboardPage = () => {
     }
   });
   const removeOrder = useMutation({
-    mutationFn: (orderId: string) => api.delete(`/chef/orders/${orderId}`),
+    mutationFn: (orderId: string) => api.post(`/chef/orders/${orderId}/dismiss`, {}),
     onMutate: async (orderId) => {
       await queryClient.cancelQueries({ queryKey: ['chefOrders'] });
       const previousOrders = queryClient.getQueryData<any[]>(['chefOrders']);

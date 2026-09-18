@@ -37,11 +37,11 @@ export const orderController = {
       next(error);
     }
   },
-  deleteCompleted: async (req: Request, res: Response, next: NextFunction) => {
+  dismissCompleted: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = String(req.params.id);
-      await orderService.deleteCompletedOrder(req.user!.userId, id);
-      res.json(sendSuccess({ id }));
+      await orderService.dismissCompletedOrder(req.user!.userId, req.user!.role, id);
+      res.json(sendSuccess({ id, message: 'Order removed from your completed orders.' }));
     } catch (error) {
       next(error);
     }

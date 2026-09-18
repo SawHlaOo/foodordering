@@ -8,6 +8,6 @@ import { statusUpdateSchema } from '../validators/order.js';
 const router = Router();
 router.get('/orders', authenticate, authorize('CHEF'), chefController.list);
 router.patch('/orders/:id/status', authenticate, authorize('CHEF'), validate(statusUpdateSchema), chefController.updateStatus);
-router.delete('/orders/:id', authenticate, authorize('CHEF'), chefController.deleteCompleted);
+router.post('/orders/:id/dismiss', authenticate, authorize('CHEF'), chefController.dismissCompleted);
 
 export default router;
