@@ -41,6 +41,7 @@ model User {
 
   customerOrders Order[] @relation("customerOrders")
   chefAssigned   Order[] @relation("chefOrders")
+  completedOrderDismissals CompletedOrderDismissal[]
 
   @@index([role])
 }
@@ -101,6 +102,7 @@ model Order {
   customer User       @relation("customerOrders", fields: [customerId], references: [id], onDelete: Restrict)
   chef     User?      @relation("chefOrders", fields: [chefId], references: [id], onDelete: SetNull)
   items    OrderItem[]
+  completedOrderDismissals CompletedOrderDismissal[]
 
   @@index([status])
   @@index([status, createdAt])
@@ -108,6 +110,20 @@ model Order {
   @@index([customerId])
   @@index([chefId])
   @@index([createdAt])
+}
+
+model CompletedOrderDismissal {
+  id         String   @id @default(cuid())
+  orderId    String
+  userId     String
+  dismissedAt DateTime @default(now())
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([orderId, userId])
+  @@index([userId])
+  @@index([orderId])
 }
 
 model OrderItem {

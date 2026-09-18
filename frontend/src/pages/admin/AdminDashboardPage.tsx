@@ -107,7 +107,7 @@ export const AdminDashboardPage = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['adminCompletedOrders'] });
       queryClient.invalidateQueries({ queryKey: ['adminDashboard'] });
-      setSuccessMessage('Completed order removed.');
+      setSuccessMessage('Completed order permanently deleted.');
     },
     onError: (error: Error) => setFormError(error.message)
   });

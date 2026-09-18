@@ -12,7 +12,7 @@ export const MyOrdersPage = () => {
     refetchIntervalInBackground: true
   });
   const removeOrder = useMutation({
-    mutationFn: (orderId: string) => api.delete(`/orders/${orderId}`),
+    mutationFn: (orderId: string) => api.post(`/orders/${orderId}/dismiss`, {}),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['customerOrders'] })
   });
 

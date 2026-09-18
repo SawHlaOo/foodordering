@@ -10,6 +10,6 @@ router.post('/', authenticate, authorize('CUSTOMER'), validate(createOrderSchema
 router.get('/', authenticate, authorize('CUSTOMER'), orderController.list);
 router.get('/:id', authenticate, authorize('CUSTOMER', 'CHEF', 'ADMIN'), orderController.detail);
 router.patch('/:id/cancel', authenticate, authorize('CUSTOMER'), orderController.cancel);
-router.delete('/:id', authenticate, authorize('CUSTOMER'), orderController.deleteCompleted);
+router.post('/:id/dismiss', authenticate, authorize('CUSTOMER'), orderController.dismissCompleted);
 
 export default router;

@@ -5,7 +5,7 @@ import { sendSuccess } from '../utils/api.js';
 export const chefController = {
   list: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const orders = await orderService.getChefOrders();
+      const orders = await orderService.getChefOrders(req.user!.userId);
       res.json(sendSuccess(orders));
     } catch (error) {
       next(error);
@@ -20,11 +20,11 @@ export const chefController = {
       next(error);
     }
   },
-  deleteCompleted: async (req: Request, res: Response, next: NextFunction) => {
+  dismissCompleted: async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = String(req.params.id);
-      await orderService.deleteChefCompletedOrder(req.user!.userId, id);
-      res.json(sendSuccess({ id }));
+      await orderService.dismissCompletedOrder(req.user!.userId, req.user!.role, id);
+      res.json(sendSuccess({ id, message: 'Order removed from your completed orders.' }));
     } catch (error) {
       next(error);
     }

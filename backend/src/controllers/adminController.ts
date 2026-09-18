@@ -24,30 +24,8 @@ export const adminController = {
   },
   listCompletedOrders: async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const orders = await prisma.order.findMany({
-        where: { status: 'COMPLETED' },
-        select: {
-          id: true,
-          createdAt: true,
-          updatedAt: true,
-          orderType: true,
-          deliveryAddress: true,
-          customerPhone: true,
-          customerName: true,
-          customer: { select: { name: true } },
-          items: { select: { food: { select: { name: true } } } }
-        },
-        orderBy: { updatedAt: 'desc' }
-      });
-      res.json(sendSuccess(orders.map((order) => ({
-        id: order.id,
-        customerName: order.customerName ?? order.customer.name,
-        foodNames: order.items.map((item) => item.food.name),
-        orderType: order.orderType,
-        deliveryAddress: order.deliveryAddress,
-        customerPhone: order.customerPhone,
-        completedAt: order.updatedAt
-      }))));
+      const orders = await orderService.getAdminCompletedOrders(req.user!.userId);
+      res.json(sendSuccess(orders));
     } catch (error) {
       next(error);
     }
@@ -61,7 +39,7 @@ export const adminController = {
         throw new ApiError('Only completed orders can be removed.', 400);
       }
       await prisma.order.delete({ where: { id } });
-      res.json(sendSuccess({ id }));
+      res.json(sendSuccess({ id, message: 'Completed order permanently deleted.' }));
     } catch (error) {
       next(error);
     }

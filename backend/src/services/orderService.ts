@@ -86,16 +86,33 @@ export const orderService = {
     }
     return orderRepo.update(orderId, { status: 'CANCELLED' });
   },
-  deleteCompletedOrder: async (customerId: string, orderId: string) => {
+  dismissCompletedOrder: async (userId: string, role: 'CUSTOMER' | 'CHEF' | 'ADMIN', orderId: string) => {
     const order = await orderRepo.findById(orderId);
     if (!order) throw new ApiError('Order not found.', 404);
-    if (order.customerId !== customerId) throw new ApiError('You can only remove your own orders.', 403);
+    if (role === 'CUSTOMER' && order.customerId !== userId) {
+      throw new ApiError('You can only remove your own orders.', 403);
+    }
+    if (role === 'CHEF' && order.chefId !== userId) {
+      throw new ApiError('This order is assigned to a different chef.', 403);
+    }
     if (order.status !== 'COMPLETED') {
       throw new ApiError('Only completed orders can be removed.', 400);
     }
-    return orderRepo.delete(orderId);
+    return orderRepo.createCompletedOrderDismissal(orderId, userId);
   },
-  getChefOrders: async () => orderRepo.listForChef(),
+  getChefOrders: async (chefId: string) => orderRepo.listForChef(chefId),
+  getAdminCompletedOrders: async (adminId: string) => {
+    const orders = await orderRepo.listCompletedForAdmin(adminId);
+    return orders.map((order) => ({
+      id: order.id,
+      customerName: order.customerName ?? order.customer.name,
+      foodNames: order.items.map((item) => item.food.name),
+      orderType: order.orderType,
+      deliveryAddress: order.deliveryAddress,
+      customerPhone: order.customerPhone,
+      completedAt: order.updatedAt
+    }));
+  },
   updateChefStatus: async (chefId: string, orderId: string, status: string) => {
     const order = await orderRepo.findById(orderId);
     if (!order) throw new ApiError('Order not found.', 404);
@@ -117,17 +134,6 @@ export const orderService = {
     }
 
     return orderRepo.update(orderId, updatePayload);
-  },
-  deleteChefCompletedOrder: async (chefId: string, orderId: string) => {
-    const order = await orderRepo.findById(orderId);
-    if (!order) throw new ApiError('Order not found.', 404);
-    if (order.chefId !== chefId) {
-      throw new ApiError('This order is assigned to a different chef.', 403);
-    }
-    if (order.status !== 'COMPLETED') {
-      throw new ApiError('Only completed orders can be removed.', 400);
-    }
-    return orderRepo.delete(orderId);
   },
   getDashboardStats: async () => {
     const today = new Date();
