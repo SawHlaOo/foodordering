@@ -9,7 +9,7 @@ export const ChefDashboardPage = () => {
   const { data: orders = [] } = useQuery({
     queryKey: ['chefOrders'],
     queryFn: () => api.get<any[]>('/chef/orders'),
-    refetchInterval: 15_000,
+    refetchInterval: 5_000,
     refetchIntervalInBackground: false
   });
 

@@ -14,7 +14,7 @@ export const OrderDetailPage = () => {
     queryKey: ['order', id],
     queryFn: () => api.get<Order>(`/orders/${id}`),
     enabled: !!id,
-    refetchInterval: 2_000,
+    refetchInterval: 5_000,
     refetchIntervalInBackground: true
   });
 
