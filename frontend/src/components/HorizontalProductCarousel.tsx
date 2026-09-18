@@ -44,7 +44,7 @@ export const HorizontalProductCarousel = ({
       if (!pausedRef.current) {
         const loopWidth = carousel.firstElementChild?.getBoundingClientRect().width ?? 0;
         carousel.scrollLeft += (speed * elapsed) / 1000;
-        if (loopWidth > 0 && carousel.scrollLeft >= loopWidth) carousel.scrollLeft -= loopWidth;
+        if (loopWidth > 0 && carousel.scrollLeft >= loopWidth - carousel.clientWidth) carousel.scrollLeft = 0;
       }
 
       animationFrameRef.current = requestAnimationFrame(animate);
@@ -59,14 +59,14 @@ export const HorizontalProductCarousel = ({
 
   if (foods.length === 0) return null;
 
-  const renderCards = (duplicate = false) => foods.map((food) => (
+  const renderCards = () => foods.map((food) => (
     cardType === 'normal'
       ? (
-        <div key={`${duplicate ? 'duplicate-' : ''}${food.id}`} className="w-72 shrink-0 snap-start">
+        <div key={food.id} className="w-72 shrink-0 snap-start">
           <FoodCard food={food} />
         </div>
       )
-      : <HomeProductCard key={`${duplicate ? 'duplicate-' : ''}${food.id}`} food={food} ariaHidden={duplicate} />
+      : <HomeProductCard key={food.id} food={food} />
   ));
 
   return (
@@ -88,9 +88,6 @@ export const HorizontalProductCarousel = ({
     >
       <div className={`flex shrink-0 gap-3 ${cardType === 'normal' ? 'items-stretch' : ''}`}>
         {renderCards()}
-      </div>
-      <div className={`pointer-events-none flex shrink-0 gap-3 ${cardType === 'normal' ? 'items-stretch' : ''}`} aria-hidden="true">
-        {renderCards(true)}
       </div>
     </div>
   );
