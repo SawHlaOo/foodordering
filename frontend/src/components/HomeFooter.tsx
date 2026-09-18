@@ -51,6 +51,5 @@ export const HomeFooter = () => (
       </nav>
     </div>
 
-    <p className="mt-8 border-t border-slate-200 pt-5 text-center">© 2026 Your Brand. All rights reserved.</p>
   </footer>
 );
