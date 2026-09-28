@@ -1,5 +1,10 @@
-const configuredApiUrl = (import.meta.env.VITE_API_URL || 'https://ordersysbackend.vercel.app/api').replace(/\/+$/, '');
-const API_URL = configuredApiUrl.endsWith('/api') ? configuredApiUrl : `${configuredApiUrl}/api`;
+const configuredApiUrl = import.meta.env.VITE_API_URL?.trim();
+if (!configuredApiUrl) {
+  throw new Error('VITE_API_URL must be configured for this environment.');
+}
+
+const normalizedApiUrl = configuredApiUrl.replace(/\/+$/, '');
+const API_URL = normalizedApiUrl.endsWith('/api') ? normalizedApiUrl : `${normalizedApiUrl}/api`;
 
 export type ApiResponse<T> = { success: true; data: T } | { success: false; message: string };
 
@@ -38,5 +43,4 @@ export const api = {
   patch: <T>(path: string, body: unknown) => request<T>(path, { method: 'PATCH', body: JSON.stringify(body) }),
   delete: <T>(path: string) => request<T>(path, { method: 'DELETE' })
 };
-
 
