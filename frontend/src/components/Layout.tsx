@@ -35,6 +35,7 @@ export const Layout = () => {
                 <Link to="/admin/dashboard?tab=menu" className={`rounded-xl px-3 py-2 font-semibold transition ${adminTab === 'menu' ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-600 hover:bg-white hover:text-brand-700'}`}>Menu items</Link>
                 <Link to="/admin/dashboard?tab=completed" className={`rounded-xl px-3 py-2 font-semibold transition ${adminTab === 'completed' ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-600 hover:bg-white hover:text-brand-700'}`}>Completed records</Link>
                 <Link to="/admin/dashboard?tab=form" className={`rounded-xl px-3 py-2 font-semibold transition ${adminTab === 'form' ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-600 hover:bg-white hover:text-brand-700'}`}>Add menu item</Link>
+                <Link to="/admin/dashboard?tab=settings" className={`rounded-xl px-3 py-2 font-semibold transition ${adminTab === 'settings' ? 'bg-white text-brand-700 shadow-sm' : 'text-slate-600 hover:bg-white hover:text-brand-700'}`}>Website settings</Link>
               </div>
             ) : (
               <>

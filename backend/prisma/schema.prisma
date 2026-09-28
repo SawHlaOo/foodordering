@@ -42,8 +42,23 @@ model User {
   customerOrders Order[] @relation("customerOrders")
   chefAssigned   Order[] @relation("chefOrders")
   completedOrderDismissals CompletedOrderDismissal[]
+  siteSettingsUpdates SiteSettings[] @relation("siteSettingsUpdatedBy")
 
   @@index([role])
+}
+
+model SiteSettings {
+  id               String   @id @default("global")
+  maintenanceMode  Boolean  @default(false)
+  maintenanceTitle String   @default("We'll be back soon!")
+  maintenanceMessage String @default("Our website is currently undergoing scheduled maintenance. We're working to improve your experience.")
+  maintenanceUntil DateTime?
+  updatedAt        DateTime @updatedAt
+  updatedById      String?
+
+  updatedBy User? @relation("siteSettingsUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+
+  @@index([updatedById])
 }
 
 model Category {

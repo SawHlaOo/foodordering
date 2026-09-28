@@ -10,6 +10,8 @@ import categoryRoutes from './routes/categoryRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import chefRoutes from './routes/chefRoutes.js';
 import adminRoutes from './routes/adminRoutes.js';
+import settingsRoutes from './routes/settingsRoutes.js';
+import { blockPublicTrafficDuringMaintenance } from './middleware/maintenance.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 
 const app = express();
@@ -72,9 +74,10 @@ app.get('/', (_req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
-app.use('/api/foods', publicCache, foodRoutes);
-app.use('/api/categories', publicCache, categoryRoutes);
-app.use('/api/orders', orderRoutes);
+app.use('/api/settings', settingsRoutes);
+app.use('/api/foods', blockPublicTrafficDuringMaintenance, publicCache, foodRoutes);
+app.use('/api/categories', blockPublicTrafficDuringMaintenance, publicCache, categoryRoutes);
+app.use('/api/orders', blockPublicTrafficDuringMaintenance, orderRoutes);
 app.use('/api/chef', chefRoutes);
 app.use('/api/admin', adminRoutes);
 

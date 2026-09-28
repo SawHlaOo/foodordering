@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../api/client';
 import type { Category, Food } from '../../types';
+import { MaintenanceSettingsPage } from './MaintenanceSettingsPage';
 
 type FoodForm = {
   name: string;
@@ -49,7 +50,7 @@ export const AdminDashboardPage = () => {
   });
   const { data: categories = [] } = useQuery({
     queryKey: ['categories'],
-    queryFn: () => api.get<Category[]>('/categories')
+    queryFn: () => api.get<Category[]>('/admin/categories')
   });
   const { data: completedOrders = [] } = useQuery({
     queryKey: ['adminCompletedOrders'],
@@ -188,6 +189,8 @@ export const AdminDashboardPage = () => {
           </div>
         ))}
       </section>}
+
+      {activeTab === 'settings' && <MaintenanceSettingsPage />}
 
       {activeTab === 'menu' && <section id="admin-menu" className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3">
