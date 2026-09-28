@@ -55,12 +55,14 @@ export const MaintenanceSettingsPage = () => {
 
   const settingsQuery = useQuery({
     queryKey: ['adminMaintenanceSettings'],
-    queryFn: () => api.get<AdminMaintenanceSettings>('/admin/settings/maintenance')
+    queryFn: () => api.get<AdminMaintenanceSettings>('/admin/settings/maintenance'),
+    staleTime: 0,
+    refetchOnMount: 'always'
   });
 
   useEffect(() => {
     if (settingsQuery.data) {
-      setForm(toFormValues(settingsQuery.data));
+      setForm((current) => current ?? toFormValues(settingsQuery.data!));
     }
   }, [settingsQuery.data]);
 
@@ -70,8 +72,9 @@ export const MaintenanceSettingsPage = () => {
       setForm(toFormValues(saved));
       setErrorMessage('');
       setSuccessMessage('Website settings saved successfully.');
+      queryClient.setQueryData(['adminMaintenanceSettings'], saved);
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: ['adminMaintenanceSettings'] }),
+        queryClient.invalidateQueries({ queryKey: ['adminMaintenanceSettings'], refetchType: 'none' }),
         queryClient.invalidateQueries({ queryKey: ['publicMaintenanceSettings'] })
       ]);
     },
@@ -81,7 +84,27 @@ export const MaintenanceSettingsPage = () => {
     }
   });
 
-  if (settingsQuery.isLoading) {
+  const toggleMaintenance = useMutation({
+    mutationFn: (maintenanceMode: boolean) =>
+      api.patch<AdminMaintenanceSettings>('/admin/settings/maintenance', { maintenanceMode }),
+    onSuccess: async (saved) => {
+      setForm((current) => current
+        ? { ...current, maintenanceMode: saved.maintenanceMode }
+        : current);
+      setErrorMessage('');
+      setSuccessMessage(`Maintenance mode ${saved.maintenanceMode ? 'enabled' : 'disabled'}.`);
+      queryClient.setQueryData(['adminMaintenanceSettings'], saved);
+      queryClient.setQueryData(['publicMaintenanceSettings'], (current: MaintenanceSettings | undefined) => current
+        ? { ...current, maintenanceMode: saved.maintenanceMode }
+        : current);
+    },
+    onError: (error: Error) => {
+      setSuccessMessage('');
+      setErrorMessage(error.message);
+    }
+  });
+
+  if (settingsQuery.isPending || settingsQuery.isFetching) {
     return <div className="rounded-3xl border border-slate-200 bg-white p-8 text-center text-slate-600">Loading website settings…</div>;
   }
 
@@ -100,6 +123,7 @@ export const MaintenanceSettingsPage = () => {
     ...toApiSettings({ ...form, maintenanceDate: form.maintenanceDate && form.maintenanceTime ? form.maintenanceDate : '', maintenanceTime: form.maintenanceDate && form.maintenanceTime ? form.maintenanceTime : '' }),
     maintenanceMode: true
   };
+  const isSaving = saveSettings.isPending || toggleMaintenance.isPending;
   const previewUrl = `/maintenance-preview?settings=${encodeURIComponent(JSON.stringify(previewSettings))}`;
 
   return (
@@ -149,8 +173,19 @@ export const MaintenanceSettingsPage = () => {
             role="switch"
             aria-checked={form.maintenanceMode}
             aria-label="Maintenance mode"
-            onClick={() => setForm({ ...form, maintenanceMode: !form.maintenanceMode })}
-            className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full transition ${form.maintenanceMode ? 'bg-brand-700' : 'bg-slate-300'}`}
+            disabled={isSaving}
+            onClick={() => {
+              const nextMode = !form.maintenanceMode;
+              setErrorMessage('');
+              setSuccessMessage('');
+              if (nextMode) {
+                setConfirmEnable(true);
+                return;
+              }
+
+              toggleMaintenance.mutate(false);
+            }}
+            className={`relative inline-flex h-7 w-12 shrink-0 items-center rounded-full transition disabled:cursor-wait disabled:opacity-60 ${form.maintenanceMode ? 'bg-brand-700' : 'bg-slate-300'}`}
           >
             <span className={`inline-block h-5 w-5 transform rounded-full bg-white shadow transition ${form.maintenanceMode ? 'translate-x-6' : 'translate-x-1'}`} />
           </button>
@@ -189,8 +224,8 @@ export const MaintenanceSettingsPage = () => {
           </p>
           <div className="flex flex-col gap-2 sm:flex-row">
             <Link to={previewUrl} target="_blank" rel="noreferrer" className="rounded-full border border-slate-300 px-4 py-2 text-center text-sm font-semibold text-slate-700 hover:bg-slate-50">Preview maintenance page</Link>
-            <button type="submit" disabled={saveSettings.isPending} className="rounded-full bg-brand-700 px-5 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60">
-              {saveSettings.isPending ? 'Saving…' : 'Save changes'}
+            <button type="submit" disabled={isSaving} className="rounded-full bg-brand-700 px-5 py-2 text-sm font-semibold text-white disabled:cursor-not-allowed disabled:opacity-60">
+              {isSaving ? 'Saving…' : 'Save changes'}
             </button>
           </div>
         </div>
@@ -202,24 +237,30 @@ export const MaintenanceSettingsPage = () => {
             <h3 id="maintenance-confirm-title" className="text-xl font-black text-slate-900">Enable Maintenance Mode?</h3>
             <p className="mt-2 text-sm leading-6 text-slate-600">Normal visitors will temporarily be unable to access the website.</p>
             <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-              <button type="button" onClick={() => setConfirmEnable(false)} className="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700">Cancel</button>
               <button
                 type="button"
-                disabled={saveSettings.isPending}
+                onClick={() => {
+                  setConfirmEnable(false);
+                  setForm((current) => current
+                    ? { ...current, maintenanceMode: settingsQuery.data?.maintenanceMode ?? current.maintenanceMode }
+                    : current);
+                }}
+                className="rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={isSaving}
                 onClick={() => {
                   setConfirmEnable(false);
                   setErrorMessage('');
                   setSuccessMessage('');
-                  try {
-                    if (hasPartialReturnTime) throw new Error('Choose both a return date and time, or clear both fields.');
-                    saveSettings.mutate(toApiSettings(form));
-                  } catch (error) {
-                    setErrorMessage(error instanceof Error ? error.message : 'Enter a valid return date and time.');
-                  }
+                  toggleMaintenance.mutate(true);
                 }}
                 className="rounded-full bg-amber-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
               >
-                {saveSettings.isPending ? 'Enabling…' : 'Enable Maintenance Mode'}
+                {isSaving ? 'Enabling…' : 'Enable Maintenance Mode'}
               </button>
             </div>
           </section>

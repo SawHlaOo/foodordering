@@ -22,8 +22,9 @@ export const MaintenanceProvider = ({ children }: { children: React.ReactNode })
   const query = useQuery({
     queryKey: ['publicMaintenanceSettings'],
     queryFn: () => api.get<MaintenanceSettings>('/settings/maintenance'),
-    staleTime: 30_000,
+    staleTime: 0,
     refetchInterval: 30_000,
+    refetchOnMount: 'always',
     retry: 2
   });
 
