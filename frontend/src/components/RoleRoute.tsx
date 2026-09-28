@@ -15,7 +15,9 @@ export const RoleRoute = ({ role, children }: { role: Role; children: React.Reac
       </div>
     );
   }
-  if (!user) return <Navigate to="/login" replace state={{ from: location }} />;
+  if (!user) {
+    return <Navigate to={role === 'ADMIN' ? '/admin/login' : '/login'} replace state={{ from: location }} />;
+  }
   if (user.role !== role) return <Navigate to="/" replace />;
 
   return <>{children}</>;

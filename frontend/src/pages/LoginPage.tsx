@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
-export const LoginPage = () => {
+export const LoginPage = ({ adminOnly = false }: { adminOnly?: boolean }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
+  const { login, logout } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -13,6 +13,10 @@ export const LoginPage = () => {
     event.preventDefault();
     try {
       const loggedInUser = await login(email, password);
+      if (adminOnly && loggedInUser.role !== 'ADMIN') {
+        logout();
+        throw new Error('Administrator access is required.');
+      }
       const from = (location.state as { from?: { pathname?: string; search?: string; hash?: string } } | null)?.from;
       if (from?.pathname) {
         navigate(`${from.pathname}${from.search || ''}${from.hash || ''}`, { replace: true });
@@ -26,14 +30,14 @@ export const LoginPage = () => {
 
   return (
     <div className="mx-auto max-w-md rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
-      <h1 className="text-2xl font-black text-slate-900 sm:text-3xl">Login</h1>
+      <h1 className="text-2xl font-black text-slate-900 sm:text-3xl">{adminOnly ? 'Admin login' : 'Login'}</h1>
       <form onSubmit={handleSubmit} className="mt-6 space-y-4">
         <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Email" className="w-full rounded-xl border border-slate-300 p-3" required />
         <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Password" className="w-full rounded-xl border border-slate-300 p-3" required />
         <button type="submit" className="w-full rounded-full bg-brand-600 py-3 font-semibold text-white">Login</button>
       </form>
       <p className="mt-4 text-sm text-slate-600">
-        Need an account? <Link to="/register" className="font-semibold text-brand-600">Create one</Link>
+        {!adminOnly && <>Need an account? <Link to="/register" className="font-semibold text-brand-600">Create one</Link></>}
       </p>
     </div>
   );

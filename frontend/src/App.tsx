@@ -44,14 +44,17 @@ const AppContent = () => {
   const { settings, isLoading, error, retry } = useMaintenance();
   const location = useLocation();
   const isAdmin = user?.role === 'ADMIN';
-  const isLoginPage = location.pathname === '/login';
+  const isPublicLoginPage = location.pathname === '/login';
+  const isAdminPath = location.pathname === '/admin' || location.pathname.startsWith('/admin/');
+  const isAdminLoginPage = location.pathname === '/admin/login';
+  const bypassesMaintenance = isAdminPath || isAdminLoginPage || isPublicLoginPage;
 
   if (authLoading && token) return <div className="flex min-h-screen items-center justify-center text-slate-600">Loading account…</div>;
   if (isLoading) return <div className="flex min-h-screen items-center justify-center text-slate-600">Loading website…</div>;
-  if (settings?.maintenanceMode && !isAdmin && !isLoginPage) {
+  if (settings?.maintenanceMode && !isAdmin && !bypassesMaintenance) {
     return <MaintenancePage settings={settings} onRetry={retry} />;
   }
-  if (error && !isAdmin && !isLoginPage) {
+  if (error && !isAdmin && !bypassesMaintenance) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
         <section className="max-w-md rounded-3xl border border-red-200 bg-white p-8 text-center shadow-sm">
@@ -65,6 +68,8 @@ const AppContent = () => {
 
   return (
     <Routes>
+      <Route path="/admin/login" element={<LoginPage adminOnly />} />
+      <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
       <Route path="/maintenance-preview" element={
         <ProtectedRoute>
           <RoleRoute role="ADMIN"><MaintenancePreview /></RoleRoute>
