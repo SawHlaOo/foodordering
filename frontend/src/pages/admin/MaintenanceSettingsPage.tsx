@@ -10,13 +10,40 @@ type AdminMaintenanceSettings = MaintenanceSettings & {
   updatedBy: { email: string } | null;
 };
 
-type FormValues = MaintenanceSettings;
+type FormValues = Omit<MaintenanceSettings, 'maintenanceUntil'> & {
+  maintenanceDate: string;
+  maintenanceTime: string;
+};
 
-const toLocalInput = (value: string | null) => {
-  if (!value) return '';
-  const date = new Date(value);
-  const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60_000);
-  return offsetDate.toISOString().slice(0, 16);
+const pad = (value: number) => String(value).padStart(2, '0');
+
+const toFormValues = (settings: MaintenanceSettings): FormValues => {
+  const date = settings.maintenanceUntil ? new Date(settings.maintenanceUntil) : null;
+  return {
+    maintenanceMode: settings.maintenanceMode,
+    maintenanceTitle: settings.maintenanceTitle,
+    maintenanceMessage: settings.maintenanceMessage,
+    maintenanceDate: date ? `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}` : '',
+    maintenanceTime: date ? `${pad(date.getHours())}:${pad(date.getMinutes())}` : ''
+  };
+};
+
+const toApiSettings = (form: FormValues): MaintenanceSettings => {
+  let maintenanceUntil: string | null = null;
+  if (form.maintenanceDate && form.maintenanceTime) {
+    const [year, month, day] = form.maintenanceDate.split('-').map(Number);
+    const [hours, minutes] = form.maintenanceTime.split(':').map(Number);
+    const localDate = new Date(year, month - 1, day, hours, minutes);
+    if (!Number.isFinite(localDate.getTime())) throw new Error('Enter a valid return date and time.');
+    maintenanceUntil = localDate.toISOString();
+  }
+
+  return {
+    maintenanceMode: form.maintenanceMode,
+    maintenanceTitle: form.maintenanceTitle,
+    maintenanceMessage: form.maintenanceMessage,
+    maintenanceUntil
+  };
 };
 
 export const MaintenanceSettingsPage = () => {
@@ -33,24 +60,14 @@ export const MaintenanceSettingsPage = () => {
 
   useEffect(() => {
     if (settingsQuery.data) {
-      setForm({
-        maintenanceMode: settingsQuery.data.maintenanceMode,
-        maintenanceTitle: settingsQuery.data.maintenanceTitle,
-        maintenanceMessage: settingsQuery.data.maintenanceMessage,
-        maintenanceUntil: settingsQuery.data.maintenanceUntil
-      });
+      setForm(toFormValues(settingsQuery.data));
     }
   }, [settingsQuery.data]);
 
   const saveSettings = useMutation({
-    mutationFn: (values: FormValues) => api.patch<AdminMaintenanceSettings>('/admin/settings/maintenance', values),
+    mutationFn: (values: MaintenanceSettings) => api.patch<AdminMaintenanceSettings>('/admin/settings/maintenance', values),
     onSuccess: async (saved) => {
-      setForm({
-        maintenanceMode: saved.maintenanceMode,
-        maintenanceTitle: saved.maintenanceTitle,
-        maintenanceMessage: saved.maintenanceMessage,
-        maintenanceUntil: saved.maintenanceUntil
-      });
+      setForm(toFormValues(saved));
       setErrorMessage('');
       setSuccessMessage('Website settings saved successfully.');
       await Promise.all([
@@ -78,7 +95,11 @@ export const MaintenanceSettingsPage = () => {
     );
   }
 
-  const previewSettings = { ...form, maintenanceMode: true };
+  const hasPartialReturnTime = Boolean(form.maintenanceDate) !== Boolean(form.maintenanceTime);
+  const previewSettings = {
+    ...toApiSettings({ ...form, maintenanceDate: form.maintenanceDate && form.maintenanceTime ? form.maintenanceDate : '', maintenanceTime: form.maintenanceDate && form.maintenanceTime ? form.maintenanceTime : '' }),
+    maintenanceMode: true
+  };
   const previewUrl = `/maintenance-preview?settings=${encodeURIComponent(JSON.stringify(previewSettings))}`;
 
   return (
@@ -103,11 +124,19 @@ export const MaintenanceSettingsPage = () => {
           event.preventDefault();
           setErrorMessage('');
           setSuccessMessage('');
+          if (hasPartialReturnTime) {
+            setErrorMessage('Choose both a return date and time, or clear both fields.');
+            return;
+          }
           if (form.maintenanceMode && !settingsQuery.data?.maintenanceMode) {
             setConfirmEnable(true);
             return;
           }
-          saveSettings.mutate(form);
+          try {
+            saveSettings.mutate(toApiSettings(form));
+          } catch (error) {
+            setErrorMessage(error instanceof Error ? error.message : 'Enter a valid return date and time.');
+          }
         }}
       >
         <div className="flex items-center justify-between gap-4 rounded-2xl border border-slate-200 bg-slate-50 p-4">
@@ -137,10 +166,21 @@ export const MaintenanceSettingsPage = () => {
           <textarea required minLength={10} maxLength={2000} rows={4} value={form.maintenanceMessage} onChange={(event) => setForm({ ...form, maintenanceMessage: event.target.value })} className="mt-2 w-full rounded-xl border border-slate-300 px-3 py-2" />
         </label>
 
-        <label className="block">
-          <span className="text-sm font-semibold text-slate-700">Expected return time <span className="font-normal text-slate-500">(optional)</span></span>
-          <input type="datetime-local" value={toLocalInput(form.maintenanceUntil)} onChange={(event) => setForm({ ...form, maintenanceUntil: event.target.value ? new Date(event.target.value).toISOString() : null })} className="mt-2 w-full rounded-xl border border-slate-300 px-3 py-2 sm:max-w-sm" />
-        </label>
+        <fieldset className="rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5">
+          <legend className="px-1 text-sm font-semibold text-slate-700">Expected return <span className="font-normal text-slate-500">(optional)</span></legend>
+          <p className="mb-4 text-sm text-slate-500">Choose a date and local time. Visitors will see this in their own time zone.</p>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <label className="block">
+              <span className="text-xs font-bold uppercase tracking-wide text-slate-500">Return date</span>
+              <input type="date" value={form.maintenanceDate} onChange={(event) => setForm({ ...form, maintenanceDate: event.target.value })} className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2" />
+            </label>
+            <label className="block">
+              <span className="text-xs font-bold uppercase tracking-wide text-slate-500">Return time</span>
+              <input type="time" value={form.maintenanceTime} onChange={(event) => setForm({ ...form, maintenanceTime: event.target.value })} className="mt-2 w-full rounded-xl border border-slate-300 bg-white px-3 py-2" />
+            </label>
+          </div>
+          {hasPartialReturnTime && <p className="mt-3 text-sm text-amber-800">Set both the return date and time, or leave both blank.</p>}
+        </fieldset>
 
         <div className="flex flex-col-reverse gap-3 border-t border-slate-100 pt-5 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-slate-500">
@@ -170,7 +210,12 @@ export const MaintenanceSettingsPage = () => {
                   setConfirmEnable(false);
                   setErrorMessage('');
                   setSuccessMessage('');
-                  saveSettings.mutate(form);
+                  try {
+                    if (hasPartialReturnTime) throw new Error('Choose both a return date and time, or clear both fields.');
+                    saveSettings.mutate(toApiSettings(form));
+                  } catch (error) {
+                    setErrorMessage(error instanceof Error ? error.message : 'Enter a valid return date and time.');
+                  }
                 }}
                 className="rounded-full bg-amber-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-60"
               >
